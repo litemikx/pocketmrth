@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "PocketMRTH",
+    "slug": "PocketMRTH",
+    "version": "1.0.3",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "jsEngine": "hermes",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#f7ede2"
+    },
+    "updates": {
+      "enabled" : true,
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/965d78e0-9ead-433c-b4df-613e4c82b67b"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#f7ede2"
+      },
+      "jsEngine": "jsc",
+      "package": "com.mixelot.PocketMRTH",
+      "versionCode": 3
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "plugins":[
+      "expo-updates"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "965d78e0-9ead-433c-b4df-613e4c82b67b"
+      }
+    }
+  }
+}

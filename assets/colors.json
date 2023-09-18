@@ -1,0 +1,55 @@
+{
+    
+    "button" : {
+        "background" : "#84a59d", 
+        "text" : "white"
+    },
+    "body" : {
+        "background" : "#f7ede2",
+        "text" : "black"
+    },
+    "input" : {
+        "border" : "black",
+        "text" : "gray"
+    },
+    "error" : {
+        "text" : "#f28482"
+    },
+    "success" : {
+        "text" : "#84a59d"
+    },
+    "link" : {
+        "text" : "#f6bd60"
+    },
+    "modal" : {
+        "background" : "white",
+        "text" : "black"
+    },
+    "navigation" : {
+        "background" : "#f7ede2",
+        "text" : "white"
+    },
+    "pie" : {
+        "up" : "#84a59d",
+        "down" : "#f28482"
+    },
+    "bar" : {
+        "sent" : "white",
+        "filtered" : "#f5cac3",
+        "error" : "#f28482",
+        "queued" : "#f6bd60",
+        "received" : "#84a59d",
+        "system" : "#f6bd60"
+    },
+    "app_header" : {
+        "background" : "#f6bd60",
+        "text" : "black"
+    },
+    "status" : {
+        "up" : "#84a59d",
+        "down" : "#f28482"
+    },
+    "items" : {
+        "background" : "rgba(255, 255, 255, 0.5)"
+    }
+}

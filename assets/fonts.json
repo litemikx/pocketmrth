@@ -1,0 +1,21 @@
+{
+    "header1" : {
+        "size" : 30,
+        "weight" : "bold"
+    },
+    "header2" : {
+        "size" : 24,
+        "weight" : "bold"
+    },
+    "header3" : {
+        "size" : 20,
+        "weight" : "bold"
+    },
+    "body" : {
+        "size" : 16
+    },
+    "label" : {
+        "size" : 18,
+        "weight" : "bold"
+    }
+}

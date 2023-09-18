@@ -1,0 +1,42 @@
+{
+  "cli": {
+    "version": ">= 5.2.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "channel": "development"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "preview"
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "channel": "preview2"
+    },
+    "preview3": {
+      "android": {
+        "developmentClient": true
+      },
+      "channel": "preview3"
+    },
+    "production": {
+      "channel": "production"
+    }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "track": "internal",
+        "serviceAccountKeyPath": "./pc-api-5350265419031313728-948-67e3c80fc5a3.json"
+      }
+    }
+  }
+}
