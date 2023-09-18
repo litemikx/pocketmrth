@@ -21,10 +21,7 @@ PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows 
 ![Channel Stats Screen](docs/screenshot-connection-channel-stats.png)
 
 ## Privacy Policy Link
-![Privacy Policy Link](https://raw.githubusercontent.com/litemikx/pocketmrth/master/docs/privacy-policy.md)
-
-## License
-![License](./LICENSE)
+[Privacy Policy Link](https://raw.githubusercontent.com/litemikx/pocketmrth/master/docs/privacy-policy.md)
 
 ## Support
 If you encounter any issues, feel free to open an issue here. 
