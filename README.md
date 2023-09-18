@@ -14,20 +14,22 @@ PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows 
 
 ## Screenshots
 
-![Login Screen](docs/screenshots/screenshot-login.png)
+![Login Screen](docs/screenshot-login.png)
 
 ![Dashboard Screen](docs/screenshot-main.png)
 
-![Channel Stats Screen](docs/screenshot-channel-stats.png)
+![Channel Stats Screen](docs/screenshot-connection-channel-stats.png)
 
 ## Privacy Policy Link
-![Privacy Policy Link](docs/privacy-policy.md)
+![Privacy Policy Link](https://raw.githubusercontent.com/litemikx/pocketmrth/master/docs/privacy-policy.md)
 
 ## License
-![License](LICENSE)
+![License](./LICENSE)
 
 ## Support
 If you encounter any issues, feel free to open an issue here. 
 
 If you have any questions or concerns, please contact me at charmiequino@gmail.com or visit my website at https://litemikx.github.io/heymikko/.
+
+
 
