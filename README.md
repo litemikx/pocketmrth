@@ -20,6 +20,9 @@ PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows 
 
 ![Channel Stats Screen](docs/screenshot-connection-channel-stats.png)
 
+## Video Demo
+[PocketMRTH - DEMO](https://www.youtube.com/watch?v=dNSfR93Cq-4)
+
 ## Privacy Policy Link
 [Privacy Policy Link](https://raw.githubusercontent.com/litemikx/pocketmrth/master/docs/privacy-policy.md)
 
@@ -31,5 +34,6 @@ If you encounter any issues, feel free to open an issue here.
 
 If you have any questions or concerns, please contact me at charmiequino@gmail.com or visit my website at https://litemikx.github.io/heymikko/.
 
-
+### If you like this or want to support my side projects, like this one, you can:
+<a href="https://www.buymeacoffee.com/heymikko" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important"></a>
 
