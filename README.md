@@ -4,8 +4,16 @@
 
 PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows you to view and monitor your Mirth Connect instance and its channel statistics on the go.
 
-## Features
+## Download
 
+<a href="https://play.google.com/store/apps/details?id=com.mixelot.PocketMRTH" target="_blank"><img src="https://raw.githubusercontent.com/litemikx/pocketmrth/docs/updates/docs/google-play-badge.png" width="300"></a>
+
+
+## Getting Started
+
+Tutorial link here: [PocketMRTH - Get Started](https://thisdevblogs.wordpress.com/2023/09/18/pocketmrth-a-mobile-app-to-monitor-your-mirth-connect/)
+
+## Features
 - No External API Service: PocketMRTH operates independently without relying on external API services.
 - Local Data Storage: Your data is securely stored on your device, enhancing privacy and security.
 - Two-Factor Authentication (2FA) Option: We've integrated 2FA for added security.
