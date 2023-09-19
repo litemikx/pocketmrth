@@ -6,7 +6,7 @@ PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows 
 
 ## Download
 
-<a href="https://play.google.com/store/apps/details?id=com.mixelot.PocketMRTH" target="_blank"><img src="https://raw.githubusercontent.com/litemikx/pocketmrth/docs/updates/docs/google-play-badge.png" width="300"></a>
+<a href="https://play.google.com/store/apps/details?id=com.mixelot.PocketMRTH" target="_blank"><img src="https://raw.githubusercontent.com/litemikx/pocketmrth/master/docs/google-play-badge.png" width="300"></a>
 
 
 ## Getting Started
