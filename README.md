@@ -34,6 +34,13 @@ If you encounter any issues, feel free to open an issue here.
 
 If you have any questions or concerns, please contact me at charmiequino@gmail.com or visit my website at https://litemikx.github.io/heymikko/.
 
+## Acknowledgments
+Thank you for the following open source projects that made this app possible:
+- [Expo](https://expo.dev/)
+- [React Native](https://reactnative.dev/)
+- [React Native Chart Kit](https://www.npmjs.com/package/react-native-chart-kit)
+- [otplib](https://github.com/yeojz/otplib)
+
 ### If you like this or want to support my side projects, like this one, you can:
 <a href="https://www.buymeacoffee.com/heymikko" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important"></a>
 
