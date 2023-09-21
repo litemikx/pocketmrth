@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity, Alert } from 'react-native';
 import CallApiMethod from '../CallApiMethod';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GetConnections from './GetConnections';
@@ -8,9 +8,6 @@ import * as SecureStore from 'expo-secure-store';
 import ChannelStackedBarChart from '../Chart/StackedBarChart';
 import ChannelModal from '../Info/ChannelModal';
 import SystemModal from '../Info/SystemModal';
-import { TextInput } from 'react-native-gesture-handler';
-
-import { Ionicons, AntDesign, FontAwesome } from '@expo/vector-icons';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -31,9 +28,6 @@ const ViewConnection = ({ route }) => {
 	// set system info
     const [system, setSystemInfo] = useState(null);
     const [isSystemModalVisible, setSystemModalVisible] = useState(false);
-
-	// sort by name
-	const [sort, setSort] = useState(true);
 
 
 	useEffect(() => {
@@ -183,102 +177,53 @@ const ViewConnection = ({ route }) => {
         }
     }
 
-	// toggle sort function for deployed channels by name ascending or descending
-	const toggleSort = () => {
-		if(!sort) {
-			// sort by name ascending
-			setChannelsSummary(channelsSummary.sort((a, b) => (a.name > b.name) ? 1 : -1));
-			setSort(true);
-		} else {
-			// sort by name descending
-			setChannelsSummary(channelsSummary.sort((a, b) => (a.name < b.name) ? 1 : -1));
-			setSort(false);
-		}
-	}
-
-	// search function for deployed channels and unedeployed channels
-	const [searchQuery, setSearchQuery] = useState('');
-
-	const searchChannels = (text) => {
-		if(text == '') {
-			performApiCall();
-		} else {
-			setChannelsSummary(channelsSummary.filter((channel) => channel.name.toLowerCase().includes(text.toLowerCase())));
-			setUndeployedChannelList(undeployedChannelList.filter((channel) => channel.name.toLowerCase().includes(text.toLowerCase())));
-		}
-	}
-
-	useEffect(() => {
-		searchChannels(searchQuery);
-	}, [searchQuery]);
-
-
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
-		
+		<View style={styles.container}>
 			<Text><Text style={styles.label}>Name:</Text><Text style={styles.content}> {connectionDetails.name}</Text></Text>
 			<Text><Text style={styles.label}>Host:</Text><Text style={styles.content}> {connectionDetails.host}</Text></Text>
 			<Button title="System" onPress={getSystemInfo(connectionDetails)} color={colors.bar.system} />
-			<View style={styles.searchContainer}>
-				<TextInput
-					style={styles.searchInput}
-					placeholder="Search"
-					value={searchQuery}
-					onChangeText={text => setSearchQuery(text)}
-				/>
-				<TouchableOpacity style={styles.sortButton} onPress={toggleSort}>
-					{ sort ? 
-						<FontAwesome name="sort-alpha-asc" size={24} color={colors.button.background} />
-						: <FontAwesome name="sort-alpha-desc" size={24} color={colors.button.background} />	
-					}
-				</TouchableOpacity>
-			</View>
 			{system ? <SystemModal style={stylesModal.modalContent} isVisible={isSystemModalVisible} onClose={toggleSystemModal} data={system} /> : null}
 			{channelsSummary && channelsSummary.length > 0 ? <Text style={styles.label}>Deployed:</Text> : null}
 			{/* Display other connection details here */}
-			{channelsSummary && channelsSummary.length > 0 ? (
-				<View style={styles.connectionList}>
-					{channelsSummary.map((item) => (
-						<TouchableOpacity
-							key={item.channelId}
-							style={styles.connectionItem}
-							onPress={() => {
-								getChannelInfo(item);
-							}}
-						>
-							<View style={styles.channelContainer}>
-								<Text>Name: {item.name}</Text>
-								<Text>Status: {item.state}</Text>
-								<ChannelStackedBarChart data={item} />
-							</View>
-						</TouchableOpacity>
-					))}
-				</View>
-			) : errorMsg ? null 
-			: channelsSummary.length == 0 ? <Text>No deployed channel found.</Text>
+			{channelsSummary && channelsSummary.length > 0 ? <FlatList
+				style={styles.connectionList}
+				data={channelsSummary}
+				keyExtractor={(item, index) => item.channelId.toString()}
+				renderItem={({ item }) => (
+					<TouchableOpacity
+						style={styles.connectionItem}
+						onPress={() => { getChannelInfo(item) }}
+					>	
+						<View style={styles.channelContainer}>
+							<Text>Name: {item.name}</Text>
+							<Text>Status: {item.state}</Text>
+							<ChannelStackedBarChart data={item} />
+						</View>
+
+					</TouchableOpacity>
+				)}
+			/> : errorMsg ? null 
 			: <Text>Loading...</Text> }
 			{channel ? <ChannelModal style={stylesModal.modalContent} isVisible={isModalVisible} onClose={toggleModal} data={channel} /> : null}
 
 			{undeployedChannelList.length > 0 ? <Text style={styles.label}>Undeployed:</Text> : null}
-			{undeployedChannelList && undeployedChannelList.length > 0 ? (
-				<View>
-					{undeployedChannelList.map((item) => (
-						<TouchableOpacity
-							key={item.channelId}
-							style={styles.connectionItem}
-							onPress={() => {
-								getChannelInfo(item);
-							}}
-						>
-							<View style={styles.channelContainer}>
-								<Text>Name: {item.name}</Text>
-								<Text>Status: {item.state}</Text>
-							</View>
-						</TouchableOpacity>
-					))}
-				</View>
-			) : errorMsg ? null 
-			: undeployedChannelList.length == 0 ? <Text>No undeployed channel found.</Text> 
+			{undeployedChannelList && undeployedChannelList.length > 0 ? <FlatList
+				data={undeployedChannelList}
+				keyExtractor={(item, index) => item.channelId.toString()}
+				renderItem={({ item }) => (
+					<TouchableOpacity
+						style={styles.connectionItem}
+						onPress={() => { getChannelInfo(item) }}
+					>
+						<View style={styles.channelContainer}>
+							<Text>Name: {item.name}</Text>
+							<Text>Status: {item.state}</Text>
+						</View>
+
+					</TouchableOpacity>
+				)}
+			/> : errorMsg ? null 
+			: undeployedChannelList.length == 0 ? null 
 			: <Text>Loading...</Text> }
 			<Text>{'\n'}</Text>
 			<Button title="Delete" onPress={() => confirmDelete()} color={colors.button.background} />
@@ -288,16 +233,15 @@ const ViewConnection = ({ route }) => {
  
 			{deleteMsg ? <Text>{deleteMsg}</Text> : null}
 
-		</ScrollView>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flexGrow: 1,
+		flex: 1,
 		padding: 20,
 		fontSize: fonts.body.size,
-		backgroundColor: colors.body.background
 	},
 	title: {
 		fontSize: fonts.header2.size,
@@ -320,37 +264,6 @@ const styles = StyleSheet.create({
 		padding: 10,
 		marginBottom: 10,
 	},
-	connectionItem: {
-		// backgroundColor white with opacity
-		//padding: 20,
-		//marginVertical: 5,
-		//borderRadius: 5,
-	},
-	searchContainer: {
-		flexDirection: 'row',
-		marginTop: 10,
-		marginBottom: 10,
-	},
-	searchInput: {
-		flex: 1,
-		width: '80%',
-		marginBottom: 10,
-		padding: 5,
-		borderWidth: 1,
-		borderColor: colors.input.border,
-		color: colors.input.text,
-		borderRadius: 5,
-	},
-	sortButton: {
-		marginLeft: 10,
-		alignItems: 'center',
-		justifyContent: 'center',
-		borderWidth: 1,
-		borderRadius: 5,
-		padding: 5,
-		marginBottom: 10,
-	},
-
 });
 
 const stylesModal = StyleSheet.create({
