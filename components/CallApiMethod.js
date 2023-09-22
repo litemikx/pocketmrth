@@ -13,12 +13,20 @@ CallApiMethod.login = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var params = '?username=' + JSON.parse(creds).username + '&password=' + JSON.parse(creds).password;
         var api = connection.host;
-        var res = await fetch(api + '/api/users/_login' + params, {
-            method: 'POST',
-            headers: {
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json'
-            }
+            };
+        
+        var res = await fetch(api + '/api/users/_login' + params, {
+            method: 'POST',
+            headers: header,
         });
 
         const json = res;
@@ -38,13 +46,23 @@ CallApiMethod.getChannelsStatistics = async (connection, channelId) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/channels/' + channelId + '/statistics', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json'
-            }
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/statistics', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
@@ -61,13 +79,23 @@ CallApiMethod.getAllChannelsStatistics = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/channels/statistics?includeUndeployed=false&aggregateStats=true', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json'
-            }
+            };
+
+        var res = await fetch(api + '/api/channels/statistics?includeUndeployed=false&aggregateStats=true', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
@@ -84,13 +112,23 @@ CallApiMethod.getChannelStatusState = async (connection, channelId) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/channels/' + channelId + '/status', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json'
-            }
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/status', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
@@ -107,13 +145,23 @@ CallApiMethod.getChannelsIdsAndNames = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/channels/idsAndNames', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json',
-            }
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/idsAndNames', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
@@ -130,13 +178,23 @@ CallApiMethod.getAllChannelStatuses = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/channels/statuses?includeUndeployed=true', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json',
-            }
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/statuses?includeUndeployed=true', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
@@ -154,17 +212,26 @@ CallApiMethod.getServerStatus = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/server/status', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json'
-            }
+            };
+
+        var res = await fetch(api + '/api/server/status', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
-        console.log('json:', json);
         return json;
 
 
@@ -179,13 +246,23 @@ CallApiMethod.getSystemInfo = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/system/info', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json'
-            }
+            };
+
+        var res = await fetch(api + '/api/system/info', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
@@ -203,17 +280,26 @@ CallApiMethod.getSystemStats = async (connection) => {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
         var api = connection.host;
-        var res = await fetch(api + '/api/system/stats', {
-            method: 'GET',
-            headers: {
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
                 'Content-Type': 'application/json',
                 'Authorization': auth,
                 'Accept': 'application/json'
-            }
+            };
+
+        var res = await fetch(api + '/api/system/stats', {
+            method: 'GET',
+            headers: header
         });
 
         const json = await res.json();
-        console.log('json:', json);
         return json;
 
     } catch (error) {
