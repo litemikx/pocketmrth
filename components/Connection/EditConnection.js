@@ -18,6 +18,10 @@ const EditConnection = ({ route }) => {
     const { connectionDetails } = route.params;
     const [name, setName] = useState(connectionDetails.name);
     const [host, setHost] = useState(connectionDetails.host);
+
+	// custom header for http request
+	const [header, setHeader] = useState(connectionDetails.header);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -49,7 +53,8 @@ const EditConnection = ({ route }) => {
                 id: uuid,
                 user_id: currentUserId,
                 name,
-                host
+                host,
+                header
             };
             const connectionsRaw = await AsyncStorage.getItem('connections');
             const connections = JSON.parse(connectionsRaw);
@@ -100,6 +105,16 @@ const EditConnection = ({ route }) => {
                 secureTextEntry={true}
                 value={password}
             />
+
+            <TextInput
+				style={styles.input}
+				placeholder="Additional Header as JSON. Ex. { x-device-id: 123456789 }"
+				onChangeText={setHeader}
+				value={header}
+				multiline={true}
+				numberOfLines={4}
+			/>
+
             <Button title="Save" onPress={handleEditConnection} color={colors.button.background} />
             
         </View>

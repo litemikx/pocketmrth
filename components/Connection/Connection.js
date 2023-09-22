@@ -46,7 +46,6 @@ const Connection = () => {
 			);
 
 			if (done) {
-				console.log('conns:', arry);
 				setConnections(arry);
 				setLoadingItems(true);
 			}

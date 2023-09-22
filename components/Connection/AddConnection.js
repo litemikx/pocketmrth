@@ -16,6 +16,9 @@ const AddConnection = () => {
 	const [host, setHost] = useState('');
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	
+	// custom header for http request
+	const [header, setHeader] = useState('');
 
 	const [success, setSuccess] = useState('');
 
@@ -35,7 +38,8 @@ const AddConnection = () => {
 					id: uuid,
 					user_id: currentUserId,
 					name,
-					host
+					host,
+					header
 				};
 				const connections = await AsyncStorage.getItem('connections');
 				const connectionsArray = connections ? JSON.parse(connections) : [];
@@ -59,6 +63,7 @@ const AddConnection = () => {
 		// clear set data form
 		setName('');
 		setHost('');
+		setHeader('');
 		setUsername('');
 		setPassword('');
 		setSuccess('');
@@ -93,6 +98,16 @@ const AddConnection = () => {
 				value={password}
 				secureTextEntry
 			/>
+
+			<TextInput
+				style={styles.input}
+				placeholder="Additional Header as JSON. Ex. { x-device-id: 123456789 }"
+				onChangeText={setHeader}
+				value={header}
+				multiline={true}
+				numberOfLines={4}
+			/>
+
 			<Button title="Save" onPress={handleAddConnection} color={colors.button.background} />
 			{errorMsg !== '' ? <Text style={{ color: colors.error.text }}>{errorMsg}</Text> : null}
 

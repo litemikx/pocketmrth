@@ -255,9 +255,6 @@ const styles = StyleSheet.create({
 	content: {
 		fontSize: fonts.body.size,
 	},
-	connectionList: {
-
-	},
 	channelContainer: {
 		borderBlockColor: 'black',
 		backgroundColor: colors.items.background,
