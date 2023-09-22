@@ -32,7 +32,7 @@ const ViewConnection = ({ route }) => {
     const [system, setSystemInfo] = useState(null);
     const [isSystemModalVisible, setSystemModalVisible] = useState(false);
 
-	// sort by name asc and desc
+	// sort by name
 	const [sort, setSort] = useState(true);
 
 	useEffect(() => {
