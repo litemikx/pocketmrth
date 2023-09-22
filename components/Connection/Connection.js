@@ -17,7 +17,7 @@ const Connection = () => {
 
 	const navigation = useNavigation();
 	
-	// sort by name
+	// sort by name asc and desc
 	const [sort, setSort] = useState(true);
 
 	useEffect(() => {

@@ -32,9 +32,8 @@ const ViewConnection = ({ route }) => {
     const [system, setSystemInfo] = useState(null);
     const [isSystemModalVisible, setSystemModalVisible] = useState(false);
 
-	// sort by name
+	// sort by name asc and desc
 	const [sort, setSort] = useState(true);
-
 
 	useEffect(() => {
 		// reset values
@@ -150,7 +149,6 @@ const ViewConnection = ({ route }) => {
     const toggleSystemModal = () => {
         setSystemModalVisible(!isSystemModalVisible);
     };
-
 
 	const getSystemInfo = (connection) => {
         return async () => {
@@ -316,12 +314,6 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.items.background,
 		padding: 10,
 		marginBottom: 10,
-	},
-	connectionItem: {
-		// backgroundColor white with opacity
-		//padding: 20,
-		//marginVertical: 5,
-		//borderRadius: 5,
 	},
 	searchContainer: {
 		flexDirection: 'row',
