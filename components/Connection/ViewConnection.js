@@ -10,7 +10,7 @@ import ChannelModal from '../Info/ChannelModal';
 import SystemModal from '../Info/SystemModal';
 import { TextInput } from 'react-native-gesture-handler';
 
-import { Ionicons, AntDesign, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -214,9 +214,25 @@ const ViewConnection = ({ route }) => {
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 		
-			<Text><Text style={styles.label}>Name:</Text><Text style={styles.content}> {connectionDetails.name}</Text></Text>
+			<View style={{flexDirection: 'row'}}>
+				<Text style={styles.label}>Name:</Text>
+				<Text style={styles.content}> {connectionDetails.name}</Text>
+				<View style={styles.iconGrp}>
+					<TouchableOpacity style={styles.iconBtn} onPress={getSystemInfo(connectionDetails)}>
+						<AntDesign name="infocirlce" size={26} color={colors.bar.system} />
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.iconBtn} onPress={() => confirmDelete()}>
+						<AntDesign name="delete" size={26} color={colors.button.background} />
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.iconBtn} onPress={() => handleEditConnection()}>
+						<FontAwesome name="edit" size={26} color={colors.button.background} />
+					</TouchableOpacity>
+				</View>
+				
+			</View>
 			<Text><Text style={styles.label}>Host:</Text><Text style={styles.content}> {connectionDetails.host}</Text></Text>
-			<Button title="System" onPress={getSystemInfo(connectionDetails)} color={colors.bar.system} />
+			
+			
 			<View style={styles.searchContainer}>
 				<TextInput
 					style={styles.searchInput}
@@ -279,11 +295,7 @@ const ViewConnection = ({ route }) => {
 			: undeployedChannelList.length == 0 ? <Text>No undeployed channel found.</Text> 
 			: <Text>Loading...</Text> }
 			<Text>{'\n'}</Text>
-			<Button title="Delete" onPress={() => confirmDelete()} color={colors.button.background} />
-			<Text>{'\n'}</Text>
-
-			<Button title="Edit" onPress={() => handleEditConnection()} color={colors.button.background} />
- 
+			
 			{deleteMsg ? <Text>{deleteMsg}</Text> : null}
 
 		</ScrollView>
@@ -308,6 +320,15 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		fontSize: fonts.body.size,
+	},
+	iconGrp: {
+		flex: 1, 
+		flexDirection: 'row', 
+		justifyContent: 'flex-end'
+	},
+	iconBtn: {
+		marginLeft: 10,
+		padding: 2
 	},
 	channelContainer: {
 		borderBlockColor: 'black',

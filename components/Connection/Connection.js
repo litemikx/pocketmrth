@@ -114,18 +114,21 @@ const Connection = () => {
 				</TouchableOpacity>
 			</View>
 			{connections && connections.length > 0 && loadingItems ?
-				( <View style={ {width: '100%' }}>
+				( <View>
 					{connections.map((item, index) => (
 						<TouchableOpacity
 							key={index}
 							style={styles.connectionItem}
 							onPress={() => handleConnectionPress(item)}
 						>
-							<Text>{item.name}</Text>
-							<Text>{item.host}</Text>
-							<Text style={styles.status}>
-								<AntDesign name="upcircle" size={24} color={item.status === true ? colors.status.up : 'grey'} /><AntDesign name="downcircle" size={24} color={item.status === false ? colors.status.down : 'grey'} />
-							</Text>
+							<View style={styles.txtGrp}>
+								<Text>{item.name}</Text>
+								<Text>{item.host}</Text>
+							</View>
+							<View style={styles.statusGrp}>
+								<AntDesign style={styles.statusIcon} name="upcircle" size={24} color={item.status === true ? colors.status.up : 'grey'} />
+								<AntDesign style={styles.statusIcon} name="downcircle" size={24} color={item.status === false ? colors.status.down : 'grey'} />
+							</View>
 						</TouchableOpacity>
 					))}
 					</View>) : loadingItems == false ? (
@@ -145,8 +148,7 @@ const styles = StyleSheet.create({
 		padding: 20,
 		backgroundColor: colors.body.background,
 		alignItems: 'center',
-		width: '100%',
-		
+		width: '100%'
 	},
 	title: {
 		fontSize: 20,
@@ -156,15 +158,24 @@ const styles = StyleSheet.create({
 	connectionItem: {
 		// backgroundColor white with opacity
 		backgroundColor: colors.items.background,
-		padding: 10,
+		padding: 15,
 		marginBottom: 10,
-		borderRadius: 5
-	},
-	status: {
-		flexDirection: 'row',
-		justifyContent: 'flex-end',
-		alignItems: 'flex-end',
+		borderRadius: 5,
 		width: '100%',
+		flexDirection: 'row',
+	},
+	txtGrp: {
+		flex: 1, 
+		flexDirection: 'column',
+	},
+	statusGrp: {
+		flex: 1, 
+		flexDirection: 'row', 
+		justifyContent: 'flex-end'
+	},
+	statusIcon: {
+		marginTop: 5,
+		marginRight: 10,
 	},
 	searchContainer: {
 		flexDirection: 'row',

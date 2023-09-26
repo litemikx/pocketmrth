@@ -1,7 +1,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Button, TextInput, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import GetConnections from './GetConnections';
@@ -78,9 +78,10 @@ const EditConnection = ({ route }) => {
         }
     };
 
-    return (success == '' ?
-        <View style={styles.container}>
-            <TextInput
+    return (
+        <ScrollView contentContainerStyle={styles.container}>
+            {success == '' ?
+            (<><TextInput
                 style={styles.input}
                 placeholder="Name"
                 onChangeText={setName}
@@ -116,25 +117,27 @@ const EditConnection = ({ route }) => {
 			/>
 
             <Button title="Save" onPress={handleEditConnection} color={colors.button.background} />
-            
-        </View>
-        : <View style={styles.container}>
-            <Text>{success}</Text>
+            </>) : (
+            <View><Text>{success}</Text>
             <Button title="Back" onPress={() => navigation.navigate('Main Connection')} color={colors.button.background} />
-        </View>
+            </View>
+            )}
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor:'#f7ede2',
-        fontSize: fonts.body.size
+        fontSize: fonts.body.size,
+        flexGrow: 1,
+		padding: 20,
+		backgroundColor: colors.body.background,
+		alignItems: 'center'
 	},
 	input: {
-		width: '80%',
+		width: '90%',
 		marginBottom: 10,
 		padding: 10,
 		borderWidth: 1,
