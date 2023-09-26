@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
 import * as Crypto from 'expo-crypto';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -71,8 +72,10 @@ const AddConnection = () => {
 		navigation.navigate('Add Connection');
 	}
 
-	return (success == '' ?
-		<View style={styles.container}>
+	return (
+		<ScrollView contentContainerStyle={styles.container}> 
+		{ success == '' ?
+			<>
 			<TextInput
 				style={styles.input}
 				placeholder="Name"
@@ -115,26 +118,32 @@ const AddConnection = () => {
 				Note: Add details of your Mirth Connect Client API here.
 				Information are saved locally in your device. Username and password are saved securely using Expo's Secure Store.
 			</Text>
-		</View>
-
+		</>
 		: success == false ?
-			<View style={styles.container}>
+			<>
 				<Text>Saving Connection...</Text>
-			</View>
+			</>
 
-			: success == true ? <View style={styles.container}>
+		: success == true ? 
+			<>
 				<Text style={styles.header}>Connection Added</Text>
 				<Button title="Close" onPress={handleSaveConnection} color={colors.button.background} />
-			</View> : null
+			</> 
+		: null 
+		}
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#f7ede2',
+        fontSize: fonts.body.size,
+        flexGrow: 1,
+		padding: 20,
+		backgroundColor: colors.body.background,
+		alignItems: 'center'
 	},
 	input: {
 		width: '80%',
