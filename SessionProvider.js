@@ -14,7 +14,6 @@ export const SessionProvider = ({ children }) => {
     const checkSession = async () => {
         const token = await AsyncStorage.getItem('userToken');
         if (token) {
-            console.log('token', token);
             return true;
         } else {
             setUserToken(null);
