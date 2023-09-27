@@ -34,7 +34,7 @@ CallApiMethod.login = async (connection) => {
         return json;
 
     } catch (error) {
-        console.error('Error logging in:', error);
+        console.log('Error logging in:', error);
         return error;
     }
 
@@ -69,7 +69,7 @@ CallApiMethod.getChannelsStatistics = async (connection, channelId) => {
         return json;
 
     } catch (error) {
-        console.error('Error fetching connections:', error);
+        console.log('Error fetching connections:', error);
         return false;
     }
 }
@@ -102,7 +102,7 @@ CallApiMethod.getAllChannelsStatistics = async (connection) => {
         return json;
 
     } catch (error) {
-        console.error('Error fetching all channel statistics:', error);
+        console.log('Error fetching all channel statistics:', error);
         return false;
     }
 }
@@ -135,7 +135,7 @@ CallApiMethod.getChannelStatusState = async (connection, channelId) => {
         return json;
 
     } catch (error) {
-        console.error('Error fetching all channel statistics:', error);
+        console.log('Error fetching all channel statistics:', error);
         return false;
     }
 }
@@ -236,7 +236,7 @@ CallApiMethod.getServerStatus = async (connection) => {
 
 
     } catch (error) {
-        console.error('Error fetching server status:', error);
+        console.log('Error fetching server status:', error);
         return false;
     }
 }
@@ -266,11 +266,10 @@ CallApiMethod.getSystemInfo = async (connection) => {
         });
 
         const json = await res.json();
-        console.log('json:', json);
         return json;
 
     } catch (error) {
-        console.error('Error fetching server info:', error);
+        console.log('Error fetching server info:', error);
         return false;
     }
 }
@@ -303,7 +302,258 @@ CallApiMethod.getSystemStats = async (connection) => {
         return json;
 
     } catch (error) {
-        console.error('Error fetching server stats:', error);
+        console.log('Error fetching server stats:', error);
+        return false;
+    }
+}
+
+// Channel Commands
+CallApiMethod.haltChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_halt', {
+            method: 'POST',
+            headers: header
+        });
+
+        const json = await res.json();
+        return json;
+
+    } catch (error) {
+        console.log('Error channel halt:', error);
+        return false;
+    }
+}
+
+CallApiMethod.stopChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_stop?returnErrors=true', {
+            method: 'POST',
+            headers: header
+        });
+
+        if(res.ok) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log('Error channel stop:', error);
+        return false;
+    }
+}
+
+CallApiMethod.startChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_start?returnErrors=true', {
+            method: 'POST',
+            headers: header
+        });
+
+        if(res.ok) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log('Error channel start:', error);
+        return false;
+    }
+}
+
+CallApiMethod.pauseChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_pause?returnErrors=true', {
+            method: 'POST',
+            headers: header
+        });
+
+        if(res.ok) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log('Error channel pause:', error);
+        return false;
+    }
+}
+
+
+CallApiMethod.resumeChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_resume?returnErrors=true', {
+            method: 'POST',
+            headers: header
+        });
+
+        if(res.ok) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log('Error channel resume:', error);
+        return false;
+    }
+}
+
+CallApiMethod.deployChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_deploy?returnErrors=true', {
+            method: 'POST',
+            headers: header
+        });
+
+        if(res.ok) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log('Error channel deploy:', error);
+        return false;
+    }
+}
+
+CallApiMethod.undeployChannel = async (connection, channelId) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/_undeploy?returnErrors=true', {
+            method: 'POST',
+            headers: header
+        });
+
+        if(res.ok) {
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (error) {
+        console.log('Error channel undeploy:', error);
         return false;
     }
 }

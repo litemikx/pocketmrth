@@ -30,7 +30,7 @@ const ChannelStackedBarChart = ({ data }) => {
     return (
         <View style={styles.container}>
             <View style={styles.barContainer}>
-                {data.statistics.entry.map((stat, index) => {
+                {sum > 0 && data.statistics.entry.map((stat, index) => {
                     const labelKey = Object.keys(stat)[0];
                     const labelValue = stat[labelKey];
 
@@ -44,11 +44,18 @@ const ChannelStackedBarChart = ({ data }) => {
                     </View>
                     )
                 })}
-                <View
+                {sum > 0 ? <View
                     key={5}
                     style={[styles.bar, { width: `${(data.queued / sum) * 100}%`, backgroundColor: colorsObject['QUEUED'] }]}>
                     <Text>{data.queued}</Text>
-                </View>
+                </View> : null}
+
+                {sum == 0 ? <View
+                    key={1}
+                    style={[styles.bar, { width: `100%`, backgroundColor: '#cccccc' }]}>
+                    <Text>0</Text>
+                </View> : null}
+
             </View>
         </View>
     );
@@ -66,7 +73,7 @@ const styles = StyleSheet.create({
         height: 20,
         justifyContent: 'center',
         alignItems: 'center',
-    },
+    }
 });
 
 export default ChannelStackedBarChart;
