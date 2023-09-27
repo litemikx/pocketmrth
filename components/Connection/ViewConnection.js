@@ -10,7 +10,7 @@ import ChannelModal from '../Info/ChannelModal';
 import SystemModal from '../Info/SystemModal';
 import { TextInput } from 'react-native-gesture-handler';
 
-import { Ionicons, AntDesign, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -26,11 +26,11 @@ const ViewConnection = ({ route }) => {
 	const [deleteMsg, setDeleteMsg] = useState('');
 	const [channel, setChannelInfo] = useState(null);
 
-    const [isModalVisible, setModalVisible] = useState(false);
+	const [isModalVisible, setModalVisible] = useState(false);
 
 	// set system info
-    const [system, setSystemInfo] = useState(null);
-    const [isSystemModalVisible, setSystemModalVisible] = useState(false);
+	const [system, setSystemInfo] = useState(null);
+	const [isSystemModalVisible, setSystemModalVisible] = useState(false);
 
 	// sort by name
 	const [sort, setSort] = useState(true);
@@ -45,7 +45,7 @@ const ViewConnection = ({ route }) => {
 		setUndeployedChannelList([]);
 
 		performApiCall();
-		
+
 	}, []);
 
 	useFocusEffect(
@@ -62,11 +62,26 @@ const ViewConnection = ({ route }) => {
 		}, [])
 	);
 
+	// Refresh the page when the user pulls down finger
+	const onRefresh = React.useCallback(() => {
+		setErrorMsg('');
+		setDeleteMsg('');
+		setChannelInfo(null);
+		setSystemInfo(null);
+		setChannelsSummary([]);
+		setUndeployedChannelList([]);
+
+		performApiCall();
+
+	}, []);
+
+
+
 	async function performApiCall() {
 		try {
 
 			const channelStats = await CallApiMethod.getAllChannelStatuses(connectionDetails);
-			
+
 			// filter based on key state not "UNDEPLOYED"
 			const deployedChannels = channelStats.list.dashboardStatus.filter((channel) => channel.state !== 'UNDEPLOYED');
 			const undeployedChannels = channelStats.list.dashboardStatus.filter((channel) => channel.state === 'UNDEPLOYED');
@@ -81,7 +96,7 @@ const ViewConnection = ({ route }) => {
 
 	async function deleteConnection() {
 		try {
-			
+
 			var conns = await GetConnections();
 			var newConns = conns.filter((conn) => conn.id !== connectionDetails.id);
 			await AsyncStorage.setItem('connections', JSON.stringify(newConns));
@@ -117,47 +132,47 @@ const ViewConnection = ({ route }) => {
 
 	// View Channel Info
 	const getChannelInfo = (channelRaw) => {
-       
-			const channelInfo = {};
 
-			channelInfo['name'] = channelRaw.name;
-			channelInfo['id'] = channelRaw.channelId;
-			channelInfo['state'] = channelRaw.state;
-			channelInfo['stats'] = [];
+		const channelInfo = {};
 
-			channelRaw.statistics.entry.map((stat) => {
-				var labelKey = Object.keys(stat)[0];
-				var labelValue = stat[labelKey];
+		channelInfo['name'] = channelRaw.name;
+		channelInfo['id'] = channelRaw.channelId;
+		channelInfo['state'] = channelRaw.state;
+		channelInfo['stats'] = [];
 
-				var statKey = Object.keys(stat)[1];
-				var statValue = stat[statKey];
+		channelRaw.statistics.entry.map((stat) => {
+			var labelKey = Object.keys(stat)[0];
+			var labelValue = stat[labelKey];
 
-				
-				channelInfo['stats'].push({ [labelValue] : statValue });
-				
-			});
-			channelInfo['stats'].push({ 'QUEUED' : channelRaw.queued });
+			var statKey = Object.keys(stat)[1];
+			var statValue = stat[statKey];
 
-            setChannelInfo(channelInfo);
-            toggleModal();
-    }
+
+			channelInfo['stats'].push({ [labelValue]: statValue });
+
+		});
+		channelInfo['stats'].push({ 'QUEUED': channelRaw.queued });
+
+		setChannelInfo(channelInfo);
+		toggleModal();
+	}
 
 	const toggleModal = () => {
-        setModalVisible(!isModalVisible);
-    };
+		setModalVisible(!isModalVisible);
+	};
 
-    const toggleSystemModal = () => {
-        setSystemModalVisible(!isSystemModalVisible);
-    };
+	const toggleSystemModal = () => {
+		setSystemModalVisible(!isSystemModalVisible);
+	};
 
 	const getSystemInfo = (connection) => {
-        return async () => {
-            const systemInfoRaw = await CallApiMethod.getSystemInfo(connection);
-            const systemInfoStats = await CallApiMethod.getSystemStats(connection);
-            
-            const systemInfo = {};
+		return async () => {
+			const systemInfoRaw = await CallApiMethod.getSystemInfo(connection);
+			const systemInfoStats = await CallApiMethod.getSystemStats(connection);
 
-			if(systemInfoRaw["com.mirth.connect.model.SystemInfo"] == null) {
+			const systemInfo = {};
+
+			if (systemInfoRaw["com.mirth.connect.model.SystemInfo"] == null) {
 				setSystemInfo(null);
 				Alert.alert(
 					"Error",
@@ -178,12 +193,12 @@ const ViewConnection = ({ route }) => {
 				setSystemInfo(systemInfo);
 				toggleSystemModal();
 			}
-        }
-    }
+		}
+	}
 
 	// toggle sort function for deployed channels by name ascending or descending
 	const toggleSort = () => {
-		if(!sort) {
+		if (!sort) {
 			// sort by name ascending
 			setChannelsSummary(channelsSummary.sort((a, b) => (a.name > b.name) ? 1 : -1));
 			setSort(true);
@@ -198,7 +213,7 @@ const ViewConnection = ({ route }) => {
 	const [searchQuery, setSearchQuery] = useState('');
 
 	const searchChannels = (text) => {
-		if(text == '') {
+		if (text == '') {
 			performApiCall();
 		} else {
 			setChannelsSummary(channelsSummary.filter((channel) => channel.name.toLowerCase().includes(text.toLowerCase())));
@@ -213,10 +228,26 @@ const ViewConnection = ({ route }) => {
 
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
-		
-			<Text><Text style={styles.label}>Name:</Text><Text style={styles.content}> {connectionDetails.name}</Text></Text>
+
+			<View style={{ flexDirection: 'row' }}>
+				<Text style={styles.label}>Name:</Text>
+				<Text style={styles.content}> {connectionDetails.name}</Text>
+				<View style={styles.iconGrp}>
+					<TouchableOpacity style={styles.iconBtn} onPress={getSystemInfo(connectionDetails)}>
+						<AntDesign name="infocirlce" size={26} color={colors.bar.system} />
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.iconBtn} onPress={() => confirmDelete()}>
+						<AntDesign name="delete" size={26} color={colors.button.background} />
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.iconBtn} onPress={() => handleEditConnection()}>
+						<FontAwesome name="edit" size={26} color={colors.button.background} />
+					</TouchableOpacity>
+				</View>
+
+			</View>
 			<Text><Text style={styles.label}>Host:</Text><Text style={styles.content}> {connectionDetails.host}</Text></Text>
-			<Button title="System" onPress={getSystemInfo(connectionDetails)} color={colors.bar.system} />
+
+
 			<View style={styles.searchContainer}>
 				<TextInput
 					style={styles.searchInput}
@@ -225,9 +256,9 @@ const ViewConnection = ({ route }) => {
 					onChangeText={text => setSearchQuery(text)}
 				/>
 				<TouchableOpacity style={styles.sortButton} onPress={toggleSort}>
-					{ sort ? 
+					{sort ?
 						<FontAwesome name="sort-alpha-asc" size={24} color={colors.button.background} />
-						: <FontAwesome name="sort-alpha-desc" size={24} color={colors.button.background} />	
+						: <FontAwesome name="sort-alpha-desc" size={24} color={colors.button.background} />
 					}
 				</TouchableOpacity>
 			</View>
@@ -252,10 +283,9 @@ const ViewConnection = ({ route }) => {
 						</TouchableOpacity>
 					))}
 				</View>
-			) : errorMsg ? null 
-			: channelsSummary.length == 0 ? <Text>No deployed channel found.</Text>
-			: <Text>Loading...</Text> }
-			{channel ? <ChannelModal style={stylesModal.modalContent} isVisible={isModalVisible} onClose={toggleModal} data={channel} /> : null}
+			) : errorMsg ? null
+				: channelsSummary.length == 0 ? <Text>No deployed channel found.</Text>
+					: <Text>Loading...</Text>}
 
 			{undeployedChannelList.length > 0 ? <Text style={styles.label}>Undeployed:</Text> : null}
 			{undeployedChannelList && undeployedChannelList.length > 0 ? (
@@ -275,16 +305,14 @@ const ViewConnection = ({ route }) => {
 						</TouchableOpacity>
 					))}
 				</View>
-			) : errorMsg ? null 
-			: undeployedChannelList.length == 0 ? <Text>No undeployed channel found.</Text> 
-			: <Text>Loading...</Text> }
-			<Text>{'\n'}</Text>
-			<Button title="Delete" onPress={() => confirmDelete()} color={colors.button.background} />
+			) : errorMsg ? null
+				: undeployedChannelList.length == 0 ? <Text>No undeployed channel found.</Text>
+					: <Text>Loading...</Text>}
 			<Text>{'\n'}</Text>
 
-			<Button title="Edit" onPress={() => handleEditConnection()} color={colors.button.background} />
- 
 			{deleteMsg ? <Text>{deleteMsg}</Text> : null}
+
+			{channel ? <ChannelModal style={stylesModal.modalContent} isVisible={isModalVisible} onClose={toggleModal} data={channel} connection={connectionDetails} onRefresh={onRefresh} /> : null}
 
 		</ScrollView>
 	);
@@ -308,6 +336,15 @@ const styles = StyleSheet.create({
 	},
 	content: {
 		fontSize: fonts.body.size,
+	},
+	iconGrp: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'flex-end'
+	},
+	iconBtn: {
+		marginLeft: 10,
+		padding: 2
 	},
 	channelContainer: {
 		borderBlockColor: 'black',
@@ -343,23 +380,23 @@ const styles = StyleSheet.create({
 });
 
 const stylesModal = StyleSheet.create({
-    modalContent: {
-      backgroundColor: 'white',
-      padding: 20,
-      borderRadius: 10,
-      width: '90%',
-      // scrollable
-      minHeight: 300,
-      // centered
-      alignSelf: 'center',
-      justifyContent: 'center',
-      // shadow
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-    }
+	modalContent: {
+		backgroundColor: 'white',
+		padding: 20,
+		borderRadius: 10,
+		width: '90%',
+		// scrollable
+		minHeight: 300,
+		// centered
+		alignSelf: 'center',
+		justifyContent: 'center',
+		// shadow
+		shadowColor: '#000',
+		shadowOffset: {
+			width: 0,
+			height: 2,
+		},
+	}
 });
 
 export default ViewConnection;
