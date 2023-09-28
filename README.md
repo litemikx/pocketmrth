@@ -19,6 +19,8 @@ Tutorial link here: [PocketMRTH - Get Started](https://thisdevblogs.wordpress.co
 - Two-Factor Authentication (2FA) Option: We've integrated 2FA for added security.
 - Secure Credential Storage: Your Mirth Connect Client API credentials are safely stored using Expo's SecureStore.
 - Effortless Channel Stats Visualization: Use the app's intuitive charts to visualize the status of your Mirth Connect servers and their channel statistics.
+- Start, Stop, Pause and Resume Channels: You are now able to interact and change your channel's state/status. 
+- Deploy and Undeploy Channels
 
 ## Screenshots
 
@@ -26,7 +28,14 @@ Tutorial link here: [PocketMRTH - Get Started](https://thisdevblogs.wordpress.co
 
 ![Dashboard Screen](docs/screenshot-main.png)
 
+![Channel List Screen](docs/screenshot-connection-list.png)
+
 ![Channel Stats Screen](docs/screenshot-connection-channel-stats.png)
+
+![Channel Command Stop Screen](docs/screenshot-channel-command-stop.png)
+
+![Channel Command Deploy Screen](docs/screenshot-channel-command-deploy.png)
+
 
 ## Video Demo
 [PocketMRTH - DEMO](https://www.youtube.com/watch?v=dNSfR93Cq-4)
