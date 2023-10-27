@@ -1,12 +1,18 @@
 // Create a Profile component that displays the user's profile information
 //
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Button, TextInput, Switch } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import TwoFactorMethod from '../../TwoFactorMethod';
 import * as Crypto from 'expo-crypto';
 import { set } from 'react-native-reanimated';
+import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as Notifications from 'expo-notifications';
+import AddBackgroundTask from '../Alert/AddBackgroundTaskAlert';
+import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -21,13 +27,63 @@ const EditProfile = () => {
     const [password, setPassword] = useState('');
     const [twofactor, setTwofactor] = useState(false); // [true, false
     const [initialTwofactor, setInitialTwofactor] = useState(false); // [true, false
+    const [notification, setNotification] = useState(false); // [true, false
+    const [pollTime, setPollTime] = useState(0); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9
     const [success, setSuccess] = useState('');
 
     const salt = process.env.EXPO_PUBLIC_SALT_PASSWORD;
 
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notificationMsg, setNotificationMsg] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
     useEffect(() => {
         getProfile();
     }, []);
+
+    useEffect(() => {
+        if (notification) {
+            // Notification
+            registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+        }
+    }, [notification]);
+
+      async function registerForPushNotificationsAsync() {
+        let token;
+    
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+    
+          });
+        }
+    
+        if (Device.isDevice) {
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+          if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+          }
+          token = await Notifications.getExpoPushTokenAsync({
+            projectId: Constants.expoConfig.extra.eas.projectId,
+          });
+          //console.log(token);
+        } else {
+          alert('Must use physical device for Push Notifications');
+        }
+    
+        return token;
+      }
+    
 
     async function getProfile() {
         try {
@@ -38,12 +94,16 @@ const EditProfile = () => {
 
             const user = usersArray.find((user) => user.id === currentUserId);
 
+            const defaultPollTime = user.pollTime != '' && user.pollTime != undefined && user.pollTime < 1 ? user.pollTime : 30;
+
             setInitialTwofactor(user.twofactor);
             setUsername(user.username);
             setUserId(user.id);
             setPassword('');
             setSecretKey(user.secretKey);
             setTwofactor(user.twofactor);
+            setNotification(user.notification);
+            setPollTime(defaultPollTime);
 
         } catch (error) {
             console.error('Error fetching profile:', error);
@@ -83,7 +143,9 @@ const EditProfile = () => {
                 username,
                 password: hashedPwd,
                 secretKey,
-                twofactor
+                twofactor,
+                notification,
+                pollTime,
             };
 
             existingUsers.push(newUser);
@@ -92,6 +154,10 @@ const EditProfile = () => {
                 'users',
                 JSON.stringify(existingUsers),
             );
+
+           var mins = pollTime * 60;
+            await AddBackgroundTask(notification, mins);
+            
 
             setSuccess(true);
         } catch (error) {
@@ -106,6 +172,8 @@ const EditProfile = () => {
         setSecretKey('');
         setSuccess('');
         setTwofactor(false);
+        setNotification(false);
+        setPollTime(10);
         navigation.navigate('Main Profile');
     }
 
@@ -153,6 +221,23 @@ const EditProfile = () => {
                 style={styles.input}
                 value={secretKey}
                 onChangeText={setSecretKey}
+            />
+
+            <Text style={styles.title}>Allow Background Notification Alert</Text>
+            <Switch
+                trackColor={{ false: "#767577", true: "#f28482" }}
+                thumbColor={notification ? "#f28482" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={setNotification}
+                value={notification}
+            />
+            <Text style={styles.title}>Poll Time in Minutes</Text>
+            <TextInput
+                style={styles.input}
+                value={pollTime}
+                onChangeText={setPollTime}
+                // type numeric
+                keyboardType='numeric'
             />
 
             <Button

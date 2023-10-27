@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -13,9 +13,18 @@ import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import AppLoading from 'expo-app-loading';
 
+import * as Notifications from 'expo-notifications';
+
 const colors = require('./assets/colors.json');
 const Stack = createNativeStackNavigator();
 
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+	  shouldShowAlert: true,
+	  shouldPlaySound: true,
+	  shouldSetBadge: false,
+	}),
+});
 
 const styles = StyleSheet.create({
 	cardStyleHeader: {
@@ -36,6 +45,9 @@ const App = () => {
 	// state to keep track of whether fonts are loaded or not
 	const [appIsReady, setAppIsReady] = useState(false);
 
+	const notificationListener = useRef();
+	const responseListener = useRef();
+
 	useEffect(() => {
 		async function prepareResources() {
 			try {
@@ -53,6 +65,22 @@ const App = () => {
 		
 		prepareResources();
 	}, []);
+
+	useEffect(() => {
+		notificationListener.current = Notifications.addNotificationReceivedListener(noti => {
+			console.log(noti);
+		});
+	
+		responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+			console.log(response);
+		});
+	
+		(() => {
+			Notifications.removeNotificationSubscription(notificationListener.current);
+			Notifications.removeNotificationSubscription(responseListener.current);
+		})();
+        
+    }, []);
 
 	if (appIsReady) {
 		return (
