@@ -39,7 +39,14 @@
       "policy": "sdkVersion"
     },
     "plugins":[
-      "expo-updates"
+      "expo-updates",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification.png",
+          "color": "#f7ede2"
+        }
+      ]
     ],
     "extra": {
       "eas": {

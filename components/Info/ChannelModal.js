@@ -1,7 +1,11 @@
 import React, { useFocusEffect, useEffect, useState } from 'react';
 import { Switch, Modal, View, Text, Button, Pressable, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import CallApiMethod from '../CallApiMethod';
-import { FontAwesome, Foundation, Feather, AntDesign, Octicons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome, Foundation, Feather, AntDesign, Octicons, MaterialIcons, Ionicons } from '@expo/vector-icons';
+
+import GetAlert from '../Alert/GetAlert';
+import AddAlert from '../Alert/AddAlert';
+import RemoveAlert from '../Alert/RemoveAlert';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -10,6 +14,10 @@ const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
 
     const [commandStatus, setCommandStatus] = useState('');
     const [commandMessage, setCommandMessage] = useState('');
+
+    // create object named alert and have keys "RECEIVED", "SENT", "FILTERED", "ERROR" and "QUEUE"
+    const [alert, setAlert] = useState([]);
+    const [alertStatus, setAlertStatus] = useState(false);
 
     const channel = data;
 
@@ -126,40 +134,140 @@ const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
         }
     }
 
+    const enableNotification = async (stat, statCount) => {
+        try {
+            var res = await AddAlert(connection.id, channel.id, channel.name, stat, statCount);
+
+            // update alert array and check if it is existing
+            setAlert([
+                ...alert,
+                stat
+            ]);
+            setAlertStatus(true);
+        } catch (error) {
+            console.log('error:', error);
+        }
+    }
+
+    const disableNotification = async (stat) => {
+        try {
+            await RemoveAlert(connection.id, channel.id, stat);
+
+            // remove stat from alert array
+            var newAlert = alert.filter((alert) => alert !== stat);
+            setAlert([
+                ...newAlert
+            ]);
+
+            setAlertStatus(true);
+
+
+        } catch (error) {
+            console.log('error:', error);
+        }
+    }          
+
     const onCloseButton = () => {
-        onClose();
         // reset values
         setCommandStatus('');
         setCommandMessage('');
+        setAlertStatus(false);
+        setAlert([]);
 
-        if (commandStatus) {
+        if (commandStatus || alertStatus) {
             onRefresh();
         }
+        onClose();
     }
+
+    
+    useEffect(() => {
+         // reset values
+         setCommandStatus('');
+         setCommandMessage('');
+         setAlertStatus(false);
+         setAlert([]);
+ 
+        async function getAlert() {
+            // get alert if existing
+            const alerts = await GetAlert(connection.id, channel.id);
+            
+            // update alert object and use stat as the key to update value
+            var newAlert = [];
+
+            alerts.map((alert) => {
+                newAlert.push(Object.keys(alert)[0]);
+            });
+
+            setAlert([
+                ...newAlert
+            ]);    
+        };
+        getAlert();
+
+    }, [isVisible]);
+
+	React.useCallback(() => {
+        setCommandStatus('');
+        setCommandMessage('');
+        setAlertStatus(false);
+        setAlert([]);
+
+        async function getAlert() {
+            // get alert if existing
+            const alerts = await GetAlert(connection.id, channel.id);
+
+            var newAlert = [];
+
+            alerts.map((alert) => {
+                newAlert.push(Object.keys(alert)[0]);
+            });
+
+            console.log('newAlert', newAlert);
+            setAlert([
+                ...newAlert
+            ]);
+
+    
+        };
+        getAlert();
+    }
+    , [isVisible]);
 
     return (
         <Modal
             visible={isVisible}
             animationType='none'
-            onRequestClose={onClose}
+            onRequestClose={onCloseButton}
             transparent={true}
         >
             <ScrollView contentContainerStyle={styles.modalContent}>
-
                 <Text style={styles.channelInfo}>Channel Info</Text>
                 <Text style={styles.item}><Text style={styles.label}>Name: </Text><Text>{channel.name}</Text></Text>
                 <Text style={styles.item}><Text style={styles.label}>ID: </Text><Text>{channel.id}</Text></Text>
                 <Text style={styles.item}><Text style={styles.label}>State: </Text><Text>{channel.state}</Text></Text>
 
+                
+
                 {/* Channel Stats: Format into a table */}
                 {channel.stats.map((stat, index) => {
-                    return (
-                        <View key={index} style={styles.tableRow}>
-                            <Text style={styles.tableStatsLabel}>{Object.keys(stat)[0]}:</Text>
-                            <Text style={styles.tableStatsValue}>{Object.values(stat)[0]}</Text>
-                        </View>
-                    );
-                })}
+                        return (
+                            <View key={index} style={styles.tableRow}>
+                                <Text style={styles.tableStatsLabel}>{Object.keys(stat)[0]}:</Text>
+                                <Text style={styles.tableStatsValue}>{Object.values(stat)[0]}</Text>
+                                <TouchableOpacity style={styles.tableStatsNotification} >
+                                    { (alert.indexOf(Object.keys(stat)[0]) > -1) ? (
+                                        <Ionicons name="notifications-circle" size={24} color="black" onPress={() => disableNotification(Object.keys(stat)[0])} />
+
+                                    ) : (
+                                        <Ionicons name="notifications-off-circle" size={24} color="gray" onPress={() => enableNotification(Object.keys(stat)[0], Object.values(stat)[0])} />
+                                    )
+                                    }
+                                </TouchableOpacity>
+                                <Text>{ alert[Object.keys(stat)[0]] }</Text>
+                            </View>
+                        );
+                    })}
 
 
                 {/* Channel Commands */}
@@ -239,7 +347,13 @@ const styles = StyleSheet.create({
     tableStatsValue: {
         fontSize: fonts.body.size,
         textAlign: 'center',
-        width: '70%',
+        width: '55%',
+        flexDirection: 'row',
+    },
+    tableStatsNotification: {
+        fontSize: fonts.body.size,
+        textAlign: 'right',
+        width: '15%',
         flexDirection: 'row',
     },
     deployGrp: {
