@@ -20,6 +20,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSession } from '../SessionProvider';
 import * as Network from 'expo-network';
 
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import Constants from 'expo-constants';
+
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+
 const colors = require('../assets/colors.json');
 const fonts = require('../assets/fonts.json');
 
@@ -71,6 +78,12 @@ const HomeScreen = () => {
 	const [loadingServers, setLoadingServers] = useState(false);
 
 	const navigation = useNavigation();
+
+	const [isRegistered, setIsRegistered] = React.useState(false);
+	const [backgroundStatus, setBackgroundStatus] = React.useState(null);
+
+	const BACKGROUND_FETCH_TASK = 'push-notification-alert';
+
 
 	useEffect(() => {
 		// reset values
@@ -158,7 +171,7 @@ const HomeScreen = () => {
 
 						if (res) {
 							setTotalConnectionsUp(totalConnectionsUp + 1);
-							
+
 							var stats = await CallApiMethod.getAllChannelsStatistics(conn);
 							if (stats) {
 								var stats = stats.list.channelStatistics;
@@ -188,34 +201,63 @@ const HomeScreen = () => {
 		}
 	}
 
+	const checkStatusAsync = async () => {
+		const backgroundStatus = await BackgroundFetch.getStatusAsync();
+		const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+		setBackgroundStatus(backgroundStatus);
+		setIsRegistered(isRegistered);
+
+		checkStatusAsync();
+	};
+
+	React.useEffect(() => {
+		checkStatusAsync();
+	}, []);
+
 	return (
 		<ScrollView contentContainerStyle={{ alignItems: 'center', flexGrow: 1, backgroundColor: colors.body.background }}>
-		<View style={styles.container}>
-			<Text style={styles.header}>Dashboard</Text>
-			<Text style={styles.title}>Servers: {totalConnectionsUp} / {totalConnections}</Text>
+			<View style={styles.container}>
 
-			{totalConnections > 0 && loadingServers ? <ServerPieChart data={{ 'totalConnectionsUp': totalConnectionsUp, 'totalConnections': totalConnections }} />
-				: <Text>No connections available</Text>}
+				<Text style={styles.header}>Dashboard</Text>
+				{
+					backgroundStatus && isRegistered ?
+						<Text>
+							Stat Alert: Active
+						</Text>
+					: backgroundStatus && !isRegistered ?
+						<Text>
+							Stat Alert: No Alert Set
+						</Text>
+					:
+						<Text>
+							Stat Alert: Inactive
+						</Text>
+				}
+				<Text style={styles.title}>Servers: {totalConnectionsUp} / {totalConnections}</Text>
 
-			<Text style={styles.title}>Stats</Text>
-			{connectionsStats && connectionsStats.length > 0 && loadingItems ?
-				 (
-					connectionsStats.map((item) =>
-						item.stats ? (
-							<ConnectionBarChart key={item.id} data={item} />
-						) : (
-							<View style={styles.noChart} key={item.id}>
-								<Text style={styles.noChartTitle}>{item.name}</Text>
-								<Text style={styles.noChartMessage}>
-									{'\n'}No stats available{'\n'}
-								</Text>
-							</View>
+				{totalConnections > 0 && loadingServers ? <ServerPieChart data={{ 'totalConnectionsUp': totalConnectionsUp, 'totalConnections': totalConnections }} />
+					: <Text>No connections available</Text>}
+
+				<Text style={styles.title}>Stats</Text>
+				{connectionsStats && connectionsStats.length > 0 && loadingItems ?
+					(
+						connectionsStats.map((item) =>
+							item.stats ? (
+								<ConnectionBarChart key={item.id} data={item} />
+							) : (
+								<View style={styles.noChart} key={item.id}>
+									<Text style={styles.noChartTitle}>{item.name}</Text>
+									<Text style={styles.noChartMessage}>
+										{'\n'}No stats available{'\n'}
+									</Text>
+								</View>
+							)
 						)
-					)
-				) : loadingItems === false ? (
-					<Text style={styles.connectionStatList}>Loading... </Text>
-				) : <Text style={styles.connectionStatList}>No connections available</Text>}
-		</View>
+					) : loadingItems === false ? (
+						<Text style={styles.connectionStatList}>Loading... </Text>
+					) : <Text style={styles.connectionStatList}>No connections available</Text>}
+			</View>
+
 		</ScrollView>
 	);
 };

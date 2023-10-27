@@ -74,7 +74,7 @@ CallApiMethod.getChannelsStatistics = async (connection, channelId) => {
     }
 }
 
-CallApiMethod.getAllChannelsStatistics = async (connection) => {
+CallApiMethod.getAllChannelsStatistics = async (connection, aggre) => {
     try {
         const creds = await SecureStore.getItemAsync(connection.id);
         var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
@@ -93,7 +93,7 @@ CallApiMethod.getAllChannelsStatistics = async (connection) => {
                 'Accept': 'application/json'
             };
 
-        var res = await fetch(api + '/api/channels/statistics?includeUndeployed=false&aggregateStats=true', {
+        var res = await fetch(api + '/api/channels/statistics?includeUndeployed=false&aggregateStats=' + (aggre ? aggre : 'true'), {
             method: 'GET',
             headers: header
         });

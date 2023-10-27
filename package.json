@@ -50,7 +50,10 @@
     "react-native-svg": "13.4.0",
     "react-native-svg-transformer": "^1.1.0",
     "react-native-web": "~0.19.6",
-    "updates": "^15.0.2"
+    "updates": "^15.0.2",
+    "expo-notifications": "~0.20.1",
+    "expo-device": "~5.4.0",
+    "expo-constants": "~14.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
