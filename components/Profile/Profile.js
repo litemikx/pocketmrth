@@ -21,6 +21,8 @@ const Profile = () => {
         const [password, setPassword] = useState('');
         const [twofactor, setTwofactor] = useState('');
         const [success, setSuccess] = useState('');
+        const [notification, setNotification] = useState('');
+        const [pollTime, setPollTime] = useState('');
     
         useEffect(() => {
             getProfile();
@@ -46,6 +48,8 @@ const Profile = () => {
                 setPassword('');
                 setSecretKey(user.secretKey);
                 setTwofactor(user.twofactor);
+                setNotification(user.notification);
+                setPollTime(user.pollTime);
     
             } catch (error) {
                 console.error('Error fetching profile:', error);
@@ -64,6 +68,10 @@ const Profile = () => {
                 <Text style={styles.text}>{secretKey}</Text>
                 <Text style={styles.label}>Two Factor</Text>
                 <Text style={styles.text}>{twofactor ? 'Yes' : 'No'}</Text>
+                <Text style={styles.label}>Notification</Text>
+                <Text style={styles.text}>{notification ? 'Yes' : 'No'}</Text>
+                <Text style={styles.label}>Poll Time (mins)</Text>
+                <Text style={styles.text}>{pollTime}</Text>
                 <Button title="Edit Profile" onPress={() => navigation.navigate('Edit Profile')} color={colors.button.background}/>
                 <Text>{'\n'}</Text>
                 <Button title="Delete Profile" onPress={() => navigation.navigate('Delete Profile')} color={colors.button.background} />

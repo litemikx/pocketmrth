@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, Button, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
@@ -20,12 +20,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSession } from '../SessionProvider';
 import * as Network from 'expo-network';
 
+import NotificationAlertStatusModal from './Info/NotificationAlertStatusModal';
+
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
+
+import { AntDesign } from '@expo/vector-icons';
 
 const colors = require('../assets/colors.json');
 const fonts = require('../assets/fonts.json');
@@ -81,6 +85,9 @@ const HomeScreen = () => {
 
 	const [isRegistered, setIsRegistered] = React.useState(false);
 	const [backgroundStatus, setBackgroundStatus] = React.useState(null);
+
+	// set modal for notification alert status
+	const [isNotificationAlertStatusModalVisible, setNotificationAlertStatusModalVisible] = useState(false);
 
 	const BACKGROUND_FETCH_TASK = 'push-notification-alert';
 
@@ -210,6 +217,10 @@ const HomeScreen = () => {
 		checkStatusAsync();
 	};
 
+	const toggleNotificationAlertStatusInfoModal = () => {
+		setNotificationAlertStatusModalVisible(!isNotificationAlertStatusModalVisible);
+	};
+
 	React.useEffect(() => {
 		checkStatusAsync();
 	}, []);
@@ -217,22 +228,24 @@ const HomeScreen = () => {
 	return (
 		<ScrollView contentContainerStyle={{ alignItems: 'center', flexGrow: 1, backgroundColor: colors.body.background }}>
 			<View style={styles.container}>
+				
+					<Text style={styles.header}>Dashboard</Text>
+					<View style={styles.iconGrp}>
+					{
+						backgroundStatus && isRegistered ?
+							<Text style={styles.iconBtn}>
+								Stat Alert: Active
+							</Text>
+						: 
+							<Text style={styles.iconBtn}>
+								Stat Alert: Inactive
+							</Text>
+					}
 
-				<Text style={styles.header}>Dashboard</Text>
-				{
-					backgroundStatus && isRegistered ?
-						<Text>
-							Stat Alert: Active
-						</Text>
-					: backgroundStatus && !isRegistered ?
-						<Text>
-							Stat Alert: No Alert Set
-						</Text>
-					:
-						<Text>
-							Stat Alert: Inactive
-						</Text>
-				}
+						<TouchableOpacity style={styles.iconBtn} onPress={toggleNotificationAlertStatusInfoModal}>
+							<AntDesign name="infocirlce" size={26} color={colors.bar.system} />
+						</TouchableOpacity>
+					</View>
 				<Text style={styles.title}>Servers: {totalConnectionsUp} / {totalConnections}</Text>
 
 				{totalConnections > 0 && loadingServers ? <ServerPieChart data={{ 'totalConnectionsUp': totalConnectionsUp, 'totalConnections': totalConnections }} />
@@ -257,6 +270,8 @@ const HomeScreen = () => {
 						<Text style={styles.connectionStatList}>Loading... </Text>
 					) : <Text style={styles.connectionStatList}>No connections available</Text>}
 			</View>
+
+			<NotificationAlertStatusModal isVisible={isNotificationAlertStatusModalVisible} onClose={toggleNotificationAlertStatusInfoModal} />
 
 		</ScrollView>
 	);
@@ -320,7 +335,16 @@ const styles = StyleSheet.create({
 		borderBottomColor: 'black',
 		textAlign: 'center',
 		color: 'grey',
-	}
+	},
+	iconGrp: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end'
+	},
+	iconBtn: {
+		fontSize: fonts.body.size,
+		marginLeft: 10,
+		padding: 2
+	},
 });
 
 export default HomeDrawer;
