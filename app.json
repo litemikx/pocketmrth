@@ -2,7 +2,7 @@
   "expo": {
     "name": "PocketMRTH",
     "slug": "PocketMRTH",
-    "version": "1.15.6",
+    "version": "1.17.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -30,7 +30,7 @@
       },
       "jsEngine": "jsc",
       "package": "com.mixelot.PocketMRTH",
-      "versionCode": 10
+      "versionCode": 11
     },
     "web": {
       "favicon": "./assets/favicon.png"
