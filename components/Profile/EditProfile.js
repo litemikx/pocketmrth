@@ -28,7 +28,7 @@ const EditProfile = () => {
     const [twofactor, setTwofactor] = useState(false); // [true, false
     const [initialTwofactor, setInitialTwofactor] = useState(false); // [true, false
     const [notification, setNotification] = useState(false); // [true, false
-    const [pollTime, setPollTime] = useState(0); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+    const [pollTime, setPollTime] = useState(30); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9
     const [success, setSuccess] = useState('');
 
     const salt = process.env.EXPO_PUBLIC_SALT_PASSWORD;
@@ -94,7 +94,7 @@ const EditProfile = () => {
 
             const user = usersArray.find((user) => user.id === currentUserId);
 
-            const defaultPollTime = user.pollTime != '' && user.pollTime != undefined && user.pollTime < 1 ? user.pollTime : 30;
+            const defaultPollTime = user.pollTime ? user.pollTime : 30;
 
             setInitialTwofactor(user.twofactor);
             setUsername(user.username);
@@ -173,7 +173,7 @@ const EditProfile = () => {
         setSuccess('');
         setTwofactor(false);
         setNotification(false);
-        setPollTime(10);
+        setPollTime(30);
         navigation.navigate('Main Profile');
     }
 
@@ -194,7 +194,7 @@ const EditProfile = () => {
 
     return (success == '' ?
         <View style={styles.container}>
-            <Text style={styles.title}>Edit Profile</Text>
+            <Text style={styles.title}>Credentials</Text>
             <TextInput
                 style={styles.input}
                 placeholder='Username'
@@ -216,7 +216,7 @@ const EditProfile = () => {
                 onValueChange={setTwofactor}
                 value={twofactor}
             />
-            <Text style={styles.title}>Secret Key</Text>
+            <Text>Secret Key</Text>
             <TextInput
                 style={styles.input}
                 value={secretKey}
@@ -231,13 +231,13 @@ const EditProfile = () => {
                 onValueChange={setNotification}
                 value={notification}
             />
-            <Text style={styles.title}>Poll Time in Minutes</Text>
+            <Text>Poll Time in Minutes</Text>
             <TextInput
                 style={styles.input}
-                value={pollTime}
+                value={pollTime.toString()}
                 onChangeText={setPollTime}
                 // type numeric
-                keyboardType='numeric'
+                keyboardType={'numeric'}
             />
 
             <Button
@@ -272,5 +272,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'gray',
     },
+    title: {
+		fontSize: fonts.label.size,
+		fontWeight: fonts.label.weight,
+		marginBottom: 10,
+	},
 });
 export default EditProfile;
