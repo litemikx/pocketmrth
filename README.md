@@ -2,7 +2,7 @@
 
 ![Feature Image](docs/pocketmrth-feature-graphic.png)
 
-PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows you to view and monitor your Mirth Connect instance and its channel statistics on the go.
+PocketMRTH is a free mobile app created in React Native and Expo.dev. It allows you to view, monitor and manage your Mirth Connect instance and its channels on the go.
 
 ## Download
 
@@ -21,6 +21,7 @@ Tutorial link here: [PocketMRTH - Get Started](https://thisdevblogs.wordpress.co
 - Effortless Channel Stats Visualization: Use the app's intuitive charts to visualize the status of your Mirth Connect servers and their channel statistics.
 - Start, Stop, Pause and Resume Channels: You are now able to interact and change your channel's state/status. 
 - Deploy and Undeploy Channels
+- Get Push Notification Alert for Specific Channel Stat Changes: Choose the channel and the specific statistic type to get notified when the app is "minimized". 
 
 ## Screenshots
 
@@ -35,6 +36,8 @@ Tutorial link here: [PocketMRTH - Get Started](https://thisdevblogs.wordpress.co
 ![Channel Command Stop Screen](docs/screenshot-channel-command-stop.png)
 
 ![Channel Command Deploy Screen](docs/screenshot-channel-command-deploy.png)
+
+![Channel Command Deploy Screen](docs/screenshot-profile-edit-page.png)
 
 
 ## Video Demo
