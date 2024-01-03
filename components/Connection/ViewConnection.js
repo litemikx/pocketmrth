@@ -35,6 +35,9 @@ const ViewConnection = ({ route }) => {
 	// sort by name
 	const [sort, setSort] = useState(true);
 
+	// loadingStatus
+	const [loadingStatus, setLoadingStatus] = useState(false);
+
 	useEffect(() => {
 		// reset values
 		setErrorMsg('');
@@ -80,6 +83,8 @@ const ViewConnection = ({ route }) => {
 	async function performApiCall() {
 		try {
 
+			setLoadingStatus(true);
+
 			const channelStats = await CallApiMethod.getAllChannelStatuses(connectionDetails);
 
 			// filter based on key state not "UNDEPLOYED"
@@ -89,8 +94,11 @@ const ViewConnection = ({ route }) => {
 			setChannelsSummary(deployedChannels);
 			setUndeployedChannelList(undeployedChannels);
 
+			setLoadingStatus(false);
+
 		} catch (error) {
 			setErrorMsg(error.message);
+			setLoadingStatus(false);
 		};
 	}
 
@@ -167,6 +175,7 @@ const ViewConnection = ({ route }) => {
 
 	const getSystemInfo = (connection) => {
 		return async () => {
+			toggleSystemModal();
 			const systemInfoRaw = await CallApiMethod.getSystemInfo(connection);
 			const systemInfoStats = await CallApiMethod.getSystemStats(connection);
 
@@ -191,7 +200,7 @@ const ViewConnection = ({ route }) => {
 				systemInfo['id'] = connection.id;
 
 				setSystemInfo(systemInfo);
-				toggleSystemModal();
+				
 			}
 		}
 	}
@@ -262,10 +271,12 @@ const ViewConnection = ({ route }) => {
 					}
 				</TouchableOpacity>
 			</View>
-			{system ? <SystemModal style={stylesModal.modalContent} isVisible={isSystemModalVisible} onClose={toggleSystemModal} data={system} /> : null}
-			{channelsSummary && channelsSummary.length > 0 ? <Text style={styles.label}>Deployed:</Text> : null}
+			<SystemModal style={stylesModal.modalContent} isVisible={isSystemModalVisible} onClose={toggleSystemModal} data={system} />
+			
+			{!loadingStatus && channelsSummary && channelsSummary.length > 0 ? <Text style={styles.label}>Deployed:</Text> : null}
 			{/* Display other connection details here */}
-			{channelsSummary && channelsSummary.length > 0 ? (
+			{loadingStatus ? <Text>Loading...</Text> 
+			: !loadingStatus && channelsSummary && channelsSummary.length > 0 ? (
 				<View style={styles.connectionList}>
 					{channelsSummary.map((item) => (
 						<TouchableOpacity
@@ -283,12 +294,13 @@ const ViewConnection = ({ route }) => {
 						</TouchableOpacity>
 					))}
 				</View>
-			) : errorMsg ? null
-				: channelsSummary.length == 0 ? <Text>No deployed channel found.</Text>
-					: <Text>Loading...</Text>}
+			) : !loadingStatus && channelsSummary.length == 0 ? <Text>No deployed channel found.</Text>
+			: !loadingStatus && errorMsg ? <Text>Something went wrong.</Text>
+			: null}
 
-			{undeployedChannelList.length > 0 ? <Text style={styles.label}>Undeployed:</Text> : null}
-			{undeployedChannelList && undeployedChannelList.length > 0 ? (
+			{!loadingStatus && undeployedChannelList.length > 0 ? <Text style={styles.label}>Undeployed:</Text> : null}
+			{loadingStatus ? <Text>Loading...</Text> 
+			: !loadingStatus && undeployedChannelList && undeployedChannelList.length > 0 ? (
 				<View>
 					{undeployedChannelList.map((item) => (
 						<TouchableOpacity
@@ -305,9 +317,9 @@ const ViewConnection = ({ route }) => {
 						</TouchableOpacity>
 					))}
 				</View>
-			) : errorMsg ? null
-				: undeployedChannelList.length == 0 ? <Text>No undeployed channel found.</Text>
-					: <Text>Loading...</Text>}
+			) : !loadingStatus && undeployedChannelList.length == 0 ? <Text>No undeployed channel found.</Text> 
+			: !loadingStatus && errorMsg ? <Text>Something went wrong.</Text>
+			: null}
 			<Text>{'\n'}</Text>
 
 			{deleteMsg ? <Text>{deleteMsg}</Text> : null}

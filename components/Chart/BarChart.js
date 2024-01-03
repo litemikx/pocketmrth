@@ -21,8 +21,10 @@ const ConnectionBarChart = ({ data }) => {
     };
 
     const getSystemInfo = (connection) => {
+        
         return async () => {
-            console.log('systemInfo connection:', connection);
+            toggleModal();
+            //console.log('systemInfo connection:', connection);
             const systemInfoRaw = await CallApiMethod.getSystemInfo(connection);
             const systemInfoStats = await CallApiMethod.getSystemStats(connection);
             
@@ -32,7 +34,7 @@ const ConnectionBarChart = ({ data }) => {
             systemInfo['id'] = connection.id;
 
             setSystemInfo(systemInfo);
-            toggleModal();
+            
         }
     }
 
@@ -94,7 +96,7 @@ const ConnectionBarChart = ({ data }) => {
 
             />
             <Text>{'\n'}</Text>
-            {system ? <SystemModal style={stylesModal.modalContent} isVisible={isModalVisible} onClose={toggleModal} data={system} /> : null}
+            <SystemModal style={stylesModal.modalContent} isVisible={isModalVisible} onClose={toggleModal} data={system} />
         </View>
     );
 };
