@@ -13,7 +13,7 @@ const colors = require('../../assets/colors.json');
 
 const Connection = () => {
 	const [connections, setConnections] = useState([]);
-	const [loadingItems, setLoadingItems] = useState(false);
+	const [loadingStatus, setLoadingStatus] = useState(false);
 
 	const navigation = useNavigation();
 	
@@ -34,6 +34,7 @@ const Connection = () => {
 
 	async function getConnections() {
 		try {
+			setLoadingStatus(true);
 			var conns = await GetConnections();
 			var arry = [];
 			var done = await Promise.all(
@@ -51,11 +52,11 @@ const Connection = () => {
 
 			if (done) {
 				setConnections(arry);
-				setLoadingItems(true);
+				setLoadingStatus(false);
 			}
 		} catch (error) {
 			console.log('error:', error);
-			setLoadingItems(true);
+			setLoadingStatus(false);
 		}
 
 	}
@@ -113,7 +114,11 @@ const Connection = () => {
 					}
 				</TouchableOpacity>
 			</View>
-			{connections && connections.length > 0 && loadingItems ?
+			{
+			loadingStatus ? (
+				<Text>Loading... </Text>
+			)
+			: !loadingStatus && connections && connections.length > 0 ?
 				( <View>
 					{connections.map((item, index) => (
 						<TouchableOpacity
@@ -131,10 +136,9 @@ const Connection = () => {
 							</View>
 						</TouchableOpacity>
 					))}
-					</View>) : loadingItems == false ? (
-					<Text>Loading... </Text>
-				)
-					: (<Text>No connections found</Text>)}
+					</View>) 
+				: ( <Text>No connections found</Text> )
+			}
 			<TouchableOpacity onPress={handleAddConnectionPress}>
 				<Ionicons name="add-circle" size={50} color={colors.button.background} />
 			</TouchableOpacity>
