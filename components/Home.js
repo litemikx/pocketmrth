@@ -21,6 +21,7 @@ import { useSession } from '../SessionProvider';
 import * as Network from 'expo-network';
 
 import NotificationAlertStatusModal from './Info/NotificationAlertStatusModal';
+import RefreshAlert from './Alert/RefreshAlert';
 
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
@@ -93,6 +94,22 @@ const HomeScreen = () => {
 
 
 	useEffect(() => {
+		(async () => {
+			var loggedin = await checkSession();
+			if (!loggedin) {
+				navigation.navigate('Login');
+			} else {
+				// Check if there is network connection
+				const networkState = await Network.getNetworkStateAsync();
+				if (networkState.isConnected === true) {
+					console.log('Network state: ' + JSON.stringify(networkState));
+					
+				} else {
+					alert('Network state: ' + JSON.stringify(networkState));
+				}
+			}
+		})();
+
 		// reset values
 		setConnectionsStats([]);
 
@@ -117,20 +134,9 @@ const HomeScreen = () => {
 
 		});
 
-		(async () => {
-			var loggedin = await checkSession();
-			if (!loggedin) {
-				navigation.navigate('Login');
-			} else {
-				// Check if there is network connection
-				const networkState = await Network.getNetworkStateAsync();
-				if (networkState.isConnected === true) {
-					console.log('Network state: ' + JSON.stringify(networkState));
-				} else {
-					alert('Network state: ' + JSON.stringify(networkState));
-				}
-			}
-		})();
+		RefreshAlert(true);
+		checkStatusAsync();
+		
 	}, []);
 
 	useFocusEffect(
@@ -154,6 +160,9 @@ const HomeScreen = () => {
 				}
 
 			});
+
+			RefreshAlert(true);
+			checkStatusAsync();
 		}, [])
 	);
 
@@ -211,19 +220,15 @@ const HomeScreen = () => {
 	const checkStatusAsync = async () => {
 		const backgroundStatus = await BackgroundFetch.getStatusAsync();
 		const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+		//console.log('backgroundStatus', backgroundStatus);
+		//console.log('isRegistered', isRegistered);
 		setBackgroundStatus(backgroundStatus);
 		setIsRegistered(isRegistered);
-
-		checkStatusAsync();
 	};
 
 	const toggleNotificationAlertStatusInfoModal = () => {
 		setNotificationAlertStatusModalVisible(!isNotificationAlertStatusModalVisible);
 	};
-
-	React.useEffect(() => {
-		checkStatusAsync();
-	}, []);
 
 	return (
 		<ScrollView contentContainerStyle={{ alignItems: 'center', flexGrow: 1, backgroundColor: colors.body.background }}>

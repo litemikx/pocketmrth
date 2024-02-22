@@ -15,6 +15,7 @@ export default async function AddBackgroundTask(notificationFlag, pollTIme) {
     // unregister all tasks in the notificationsArray
     var unreg = await BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
     console.log('unregisterAllTasksAsync', unreg);
+    return;
   } else {
     TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
       var conns = await GetConnections();
@@ -128,6 +129,8 @@ export default async function AddBackgroundTask(notificationFlag, pollTIme) {
         promise_responses.filter(function (el) {
           return el != null;
         });
+      } else {
+        return false;
       }
     });
 
