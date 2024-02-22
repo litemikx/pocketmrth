@@ -63,8 +63,8 @@ export default async function RemoveAlert(connectionId, channelId, stat) {
                     filteredAlerts.push(updatedAlert);
                     // save alerts
                     await AsyncStorage.setItem('alerts', JSON.stringify(filteredAlerts));
-                    return true;
-                    
+
+                    return;
                 }
             }
         }
