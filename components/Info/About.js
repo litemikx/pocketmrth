@@ -12,6 +12,9 @@ import PrivacyModal from './PrivacyPolicyModal';
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
 
+// get version from package.json
+const version = require('../../package.json').version;
+
 const About = () => {
 
     // Modal for TOS
@@ -37,6 +40,8 @@ const About = () => {
                     source={require('../../assets/logo.png')}
                 />
                 <Text style={styles.title}>PocketMRTH</Text>
+                {/* Version */}
+                <Text style={styles.version}>Version: {version}</Text>
             </View>
             <View style={styles.bottomContainer}>
                 <Text style={styles.description}>PocketMRTH is a mobile app for Mirth Connect administrators to monitor their Mirth Connect servers on the go. It allows you to check system info, usage and channel statistics.
@@ -46,6 +51,8 @@ const About = () => {
                     {'\n'}
                     PocketMRTH is not affiliated with NextGen Healthcare or Mirth Corporation.</Text>
             </View>
+            
+
             {/* Link to open a modal for TOS */}
             <TouchableOpacity onPress={toggleTOSModal}>
                 <Text style={styles.link}>Terms of Service</Text>

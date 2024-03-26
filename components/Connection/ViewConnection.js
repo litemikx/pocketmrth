@@ -10,7 +10,8 @@ import ChannelModal from '../Info/ChannelModal';
 import SystemModal from '../Info/SystemModal';
 import { TextInput } from 'react-native-gesture-handler';
 
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { clickProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
@@ -138,6 +139,11 @@ const ViewConnection = ({ route }) => {
 		navigation.navigate('Edit Connection', { connectionDetails });
 	};
 
+	// View Events
+	const handleViewEvents = (connectionDetails) => {
+		navigation.navigate('View Events', { connectionDetails });
+	};
+
 	// View Channel Info
 	const getChannelInfo = (channelRaw) => {
 
@@ -244,6 +250,9 @@ const ViewConnection = ({ route }) => {
 				<View style={styles.iconGrp}>
 					<TouchableOpacity style={styles.iconBtn} onPress={getSystemInfo(connectionDetails)}>
 						<AntDesign name="infocirlce" size={26} color={colors.bar.system} />
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.iconBtn} onPress={() => handleViewEvents(connectionDetails)}>
+						<SimpleLineIcons name="event" size={26} color={colors.button.background} />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.iconBtn} onPress={() => confirmDelete()}>
 						<AntDesign name="delete" size={26} color={colors.button.background} />

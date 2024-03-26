@@ -41,6 +41,11 @@
         "received" : "#84a59d",
         "system" : "#f6bd60"
     },
+    "event_status" : {
+        "error" : "#f28482",
+        "warning" : "#f6bd60",
+        "information" : "#84a59d"
+    },
     "app_header" : {
         "background" : "#f6bd60",
         "text" : "black"
@@ -51,5 +56,9 @@
     },
     "items" : {
         "background" : "rgba(255, 255, 255, 0.5)"
+    },
+    "button_loadmore" : {
+            "background" : "#f7ede2",
+            "text" : "white"
     }
 }

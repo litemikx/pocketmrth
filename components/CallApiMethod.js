@@ -558,4 +558,72 @@ CallApiMethod.undeployChannel = async (connection, channelId) => {
     }
 }
 
+CallApiMethod.getServerEvents = async (connection, param) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/events' + (param ? '?'+param : '?limit=20'), {
+            method: 'GET',
+            headers: header
+        });
+
+        const json = await res.json();
+        
+        return json;
+
+    } catch (error) {
+        console.log('Error fetching server event logs:', error);
+        return false;
+    }
+}
+
+CallApiMethod.getServerUsers = async (connection, param) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/users', {
+            method: 'GET',
+            headers: header
+        });
+
+        const json = await res.json();
+        
+        return json;
+
+    } catch (error) {
+        console.log('Error fetching server users:', error);
+        return false;
+    }
+}
+
 export default CallApiMethod;

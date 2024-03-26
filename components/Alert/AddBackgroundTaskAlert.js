@@ -14,7 +14,6 @@ export default async function AddBackgroundTask(notificationFlag, pollTIme) {
   if (!notificationFlag) {
     // unregister all tasks in the notificationsArray
     var unreg = await BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
-    console.log('unregisterAllTasksAsync', unreg);
     return;
   } else {
     TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
