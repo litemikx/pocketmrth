@@ -60,7 +60,7 @@ const ViewEvents = ({ route }) => {
 	async function getUsers() {
 		try {
 			var users = await CallApiMethod.getServerUsers(connectionDetails);
-			var arry = (users.list && users.list.user) && users.length > 1 ? users.list.user : (users.list && users.list.user) && users.length == 1 ? [users.list.user] : [];
+			var arry = (users.list && users.list.user) && users.list.user.length > 1 ? users.list.user : (users.list && users.list.user) && users.list.user.length == 1 ? [users.list.user] : [];
 			setUsers([...arry]);
 		} catch (error) {
 			console.log('error:', error);
