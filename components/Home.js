@@ -7,6 +7,7 @@ import ConnectionScreen from './Connection/Connection';
 import AddConnectionScreen from './Connection/AddConnection';
 import ViewConnectionScreen from './Connection/ViewConnection';
 import EditConnectionScreen from './Connection/EditConnection';
+import ViewEvents from './Connection/ViewEvents';
 import ProfileScreen from './Profile/Profile';
 import EditProfileScreen from './Profile/EditProfile';
 import DeleteProfileScreen from './Profile/DeleteProfile';
@@ -45,6 +46,7 @@ const ConnectionStack = () => {
 			<Stack.Screen options={styles.cardStyleHeader} name="Add Connection" component={AddConnectionScreen} />
 			<Stack.Screen options={styles.cardStyleHeader} name="View Connection" component={ViewConnectionScreen} />
 			<Stack.Screen options={styles.cardStyleHeader} name="Edit Connection" component={EditConnectionScreen} />
+			<Stack.Screen options={styles.cardStyleHeader} name="View Events" component={ViewEvents} />
 		</Stack.Navigator>
 	);
 };
@@ -103,7 +105,6 @@ const HomeScreen = () => {
 				const networkState = await Network.getNetworkStateAsync();
 				if (networkState.isConnected === true) {
 					console.log('Network state: ' + JSON.stringify(networkState));
-					
 				} else {
 					alert('Network state: ' + JSON.stringify(networkState));
 				}
@@ -220,8 +221,7 @@ const HomeScreen = () => {
 	const checkStatusAsync = async () => {
 		const backgroundStatus = await BackgroundFetch.getStatusAsync();
 		const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
-		//console.log('backgroundStatus', backgroundStatus);
-		//console.log('isRegistered', isRegistered);
+		
 		setBackgroundStatus(backgroundStatus);
 		setIsRegistered(isRegistered);
 	};

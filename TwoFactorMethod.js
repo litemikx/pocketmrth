@@ -8,10 +8,8 @@ import { createDigest, createRandomBytes } from '@otplib/plugin-crypto-js';
 const TwoFactorMethod = {};
 
 TwoFactorMethod.generateSecretKey = async () => {
-    console.log('start generateSecretKey');
     const authenticator = new Authenticator({ createDigest, keyDecoder, keyEncoder, createRandomBytes });
     const secret = await authenticator.generateSecret();
-    console.log('secret', secret);
     return secret;
 };
 
