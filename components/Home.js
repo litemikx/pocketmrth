@@ -13,6 +13,7 @@ import EditProfileScreen from './Profile/EditProfile';
 import DeleteProfileScreen from './Profile/DeleteProfile';
 import LogOutScreen from './LogOut';
 import AboutScreen from './Info/About';
+import HelpScreen from './Info/Help';
 import GetConnections from './Connection/GetConnections';
 import CallApiMethod from './CallApiMethod';
 import ServerPieChart from './Chart/PieChart';
@@ -69,6 +70,7 @@ const HomeDrawer = () => {
 			<Drawer.Screen options={styles.cardStyleHeader} name="Connection" component={ConnectionStack} />
 			<Drawer.Screen options={styles.cardStyleHeader} name="Profile" component={ProfileStack} />
 			<Drawer.Screen options={styles.cardStyleHeader} name="Log Out" component={LogOutScreen} />
+			<Drawer.Screen options={styles.cardStyleHeader} name="Help" component={HelpScreen} />
 			<Drawer.Screen options={styles.cardStyleHeader} name="About" component={AboutScreen} />
 		</Drawer.Navigator>
 	);
