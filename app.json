@@ -13,7 +13,7 @@
       "backgroundColor": "#f7ede2"
     },
     "updates": {
-      "enabled" : true,
+      "enabled": true,
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/965d78e0-9ead-433c-b4df-613e4c82b67b"
     },
@@ -38,17 +38,18 @@
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
-    "plugins":[
+    "plugins": [
       "expo-updates",
       [
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#FFFFFF", //white
+          "color": "#FFFFFF",
           "androidMode": "default"
-          
         }
-      ]
+      ],
+      "expo-font",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {
