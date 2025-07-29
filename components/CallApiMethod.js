@@ -626,4 +626,39 @@ CallApiMethod.getServerUsers = async (connection, param) => {
     }
 }
 
+// Get Channel Messages
+CallApiMethod.getChannelMessages = async (connection, channelId, query) => {
+    try {
+        const creds = await SecureStore.getItemAsync(connection.id);
+        var auth = 'Basic ' + btoa(JSON.parse(creds).username + ':' + JSON.parse(creds).password);
+        var api = connection.host;
+
+        var customHeaderJson = connection.header ? JSON.parse(connection.header) : null;
+
+        var header = customHeaderJson ? {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json',
+                ...customHeaderJson
+            } : {
+                'Content-Type': 'application/json',
+                'Authorization': auth,
+                'Accept': 'application/json'
+            };
+
+        var res = await fetch(api + '/api/channels/' + channelId + '/messages' + (query ? '?'+query : '?limit=20'), {
+            method: 'GET',
+            headers: header
+        });
+
+        const json = await res.json();
+        return json;
+
+    } catch (error) {
+        console.log('Error fetching channel messages:', error);
+        return false;
+    }
+}
+
+
 export default CallApiMethod;

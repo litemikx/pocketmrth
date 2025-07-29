@@ -7,6 +7,7 @@ import ConnectionScreen from './Connection/Connection';
 import AddConnectionScreen from './Connection/AddConnection';
 import ViewConnectionScreen from './Connection/ViewConnection';
 import EditConnectionScreen from './Connection/EditConnection';
+import GetConnections from './Connection/GetConnections';
 import ViewEvents from './Connection/ViewEvents';
 import ProfileScreen from './Profile/Profile';
 import EditProfileScreen from './Profile/EditProfile';
@@ -14,7 +15,9 @@ import DeleteProfileScreen from './Profile/DeleteProfile';
 import LogOutScreen from './LogOut';
 import AboutScreen from './Info/About';
 import HelpScreen from './Info/Help';
-import GetConnections from './Connection/GetConnections';
+
+import ViewChannelMessagesScreen from './Channel/ViewChannelMessages';
+
 import CallApiMethod from './CallApiMethod';
 import ServerPieChart from './Chart/PieChart';
 import ConnectionBarChart from './Chart/BarChart';
@@ -40,6 +43,7 @@ const fonts = require('../assets/fonts.json');
 const Drawer = createDrawerNavigator();
 const Stack = createNativeStackNavigator();
 
+
 const ConnectionStack = () => {
 	return (
 		<Stack.Navigator>
@@ -48,6 +52,7 @@ const ConnectionStack = () => {
 			<Stack.Screen options={styles.cardStyleHeader} name="View Connection" component={ViewConnectionScreen} />
 			<Stack.Screen options={styles.cardStyleHeader} name="Edit Connection" component={EditConnectionScreen} />
 			<Stack.Screen options={styles.cardStyleHeader} name="View Events" component={ViewEvents} />
+			<Stack.Screen options={styles.cardStyleHeader} name="View Error Messages" component={ViewChannelMessagesScreen} />
 		</Stack.Navigator>
 	);
 };

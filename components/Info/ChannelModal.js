@@ -3,6 +3,9 @@ import { Switch, Modal, View, Text, Button, Pressable, StyleSheet, ScrollView, T
 import CallApiMethod from '../CallApiMethod';
 import { FontAwesome, Foundation, Feather, AntDesign, Octicons, MaterialIcons, Ionicons } from '@expo/vector-icons';
 
+// navigation
+import { useNavigation } from '@react-navigation/native';
+
 import GetAlert from '../Alert/GetAlert';
 import AddAlert from '../Alert/AddAlert';
 import RemoveAlert from '../Alert/RemoveAlert';
@@ -11,6 +14,8 @@ const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
 
 const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
+
+    const navigation = useNavigation();
 
     const [commandStatus, setCommandStatus] = useState('');
     const [commandMessage, setCommandMessage] = useState('');
@@ -180,6 +185,11 @@ const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
         onClose();
     }
 
+    // button to navigate to ViewChannelMessages component
+    const onViewMessages = () => {
+        onCloseButton();
+    }
+
     
     useEffect(() => {
          // reset values
@@ -295,6 +305,8 @@ const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
                     </TouchableOpacity>
                 </View>
 
+                {/* Button to navigate to ViewChannelMessages component */}
+                <Button title="View Error Messages" onPress={() => navigation.navigate('View Error Messages', { state : { connection, data } })} color={colors.button.background} />
 
                 {commandStatus ? <View style={styles.commandMessage}><Text><FontAwesome name="envelope-o" size={24} color="black" /> {commandMessage}</Text></View>
                     : commandStatus === false ? <View style={styles.commandMessageError}><Text><MaterialIcons name="error-outline" size={24} color="black" /> {commandMessage}</Text></View>
