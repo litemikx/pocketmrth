@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignupScreen from './components/SignUp';
@@ -11,7 +11,9 @@ import { SessionProvider } from './SessionProvider';
 import * as Font from 'expo-font';
 // AppLoading import
 import * as SplashScreen from 'expo-splash-screen';
-import AppLoading from 'expo-app-loading';
+//import AppLoading from 'expo-app-loading';
+
+
 
 import * as Notifications from 'expo-notifications';
 
@@ -98,7 +100,9 @@ const App = () => {
 		)
 	} else {
 		return (
-			<AppLoading />
+			<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+				<ActivityIndicator size="large" />
+			</View>
 		);
 	}
 };

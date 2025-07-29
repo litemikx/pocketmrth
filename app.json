@@ -4,14 +4,14 @@
     "slug": "PocketMRTH",
     "version": "2.0.0",
     "orientation": "portrait",
+    "splash": {
+      "image": "./assets/logo-200x200.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#f7ede2"
+    },
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "jsEngine": "hermes",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#f7ede2"
-    },
     "updates": {
       "enabled": true,
       "fallbackToCacheTimeout": 0,
@@ -48,8 +48,8 @@
           "androidMode": "default"
         }
       ],
-      "expo-font",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-font"
     ],
     "extra": {
       "eas": {
