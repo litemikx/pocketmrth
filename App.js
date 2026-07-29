@@ -92,7 +92,6 @@ const App = () => {
 						<Stack.Screen options={styles.cardStyleHeader} name="Login" component={LoginScreen} />
 						<Stack.Screen options={styles.cardStyleHeader} name="Passcode" component={PasscodeScreen} />
 						<Stack.Screen options={styles.cardStyleHeader} name="Signup" component={SignupScreen} />
-						<Stack.Screen options={styles.cardStyleHeader} name="About" component={AboutScreen} />
 						<Stack.Screen options={styles.cardStyleNoHeader} name="Home" component={HomeDrawer} />
 					</Stack.Navigator>
 				</NavigationContainer>
