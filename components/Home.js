@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, Button, StyleSheet, ScrollView, FlatList, TouchableOpacity } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, DrawerActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import ConnectionScreen from './Connection/Connection';
 import AddConnectionScreen from './Connection/AddConnection';
 import ViewConnectionScreen from './Connection/ViewConnection';
@@ -35,49 +36,176 @@ import Constants from 'expo-constants';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const colors = require('../assets/colors.json');
 const fonts = require('../assets/fonts.json');
 
-const Drawer = createDrawerNavigator();
+const BottomTabs = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const MoreDrawer = createDrawerNavigator();
 
 
 const ConnectionStack = () => {
 	return (
-		<Stack.Navigator>
-			<Stack.Screen options={styles.cardStyleNoHeader} name="Main Connection" component={ConnectionScreen} />
-			<Stack.Screen options={styles.cardStyleHeader} name="Add Connection" component={AddConnectionScreen} />
-			<Stack.Screen options={styles.cardStyleHeader} name="View Connection" component={ViewConnectionScreen} />
-			<Stack.Screen options={styles.cardStyleHeader} name="Edit Connection" component={EditConnectionScreen} />
-			<Stack.Screen options={styles.cardStyleHeader} name="View Events" component={ViewEvents} />
-			<Stack.Screen options={styles.cardStyleHeader} name="View Error Messages" component={ViewChannelMessagesScreen} />
+		<Stack.Navigator screenOptions={styles.cardStyleNoHeader}>
+			<Stack.Screen name="Main Connection" component={ConnectionScreen} />
+			<Stack.Screen name="Add Connection" component={AddConnectionScreen} />
+			<Stack.Screen name="View Connection" component={ViewConnectionScreen} />
+			<Stack.Screen name="Edit Connection" component={EditConnectionScreen} />
+			<Stack.Screen name="View Events" component={ViewEvents} />
+			<Stack.Screen name="View Error Messages" component={ViewChannelMessagesScreen} />
 		</Stack.Navigator>
 	);
 };
 
 const ProfileStack = () => {
 	return (
-		<Stack.Navigator>
-			<Stack.Screen options={styles.cardStyleNoHeader} name="Main Profile" component={ProfileScreen} />
-			<Stack.Screen options={styles.cardStyleHeader} name="Edit Profile" component={EditProfileScreen} />
-			<Stack.Screen options={styles.cardStyleHeader} name="Delete Profile" component={DeleteProfileScreen} />
+		<Stack.Navigator screenOptions={styles.cardStyleNoHeader}>
+			<Stack.Screen name="Main Profile" component={ProfileScreen} />
+			<Stack.Screen name="Edit Profile" component={EditProfileScreen} />
+			<Stack.Screen name="Delete Profile" component={DeleteProfileScreen} />
 		</Stack.Navigator>
 	);
 };
 
+const EmptyScreen = () => <View style={{ flex: 1, backgroundColor: colors.body.background }} />;
 
-const HomeDrawer = () => {
+const MoreDrawerContent = (props) => {
+	// Navigate to hidden tabs inside HomeTabs so the bottom bar remains visible.
+	// Using nested navigation: drawer → 'Home Tabs' → specific tab screen.
+	const goTo = (screen) => {
+		props.navigation.closeDrawer();
+		props.navigation.navigate('Home Tabs', { screen });
+	};
 	return (
-		<Drawer.Navigator screenOptions={{ drawerStyle: styles.drawerStyle, drawerActiveBackgroundColor: '#f28482', drawerActiveTintColor: 'white' }}>
-			<Drawer.Screen options={styles.cardStyleHeader} name="Main" component={HomeScreen} />
-			<Drawer.Screen options={styles.cardStyleHeader} name="Connection" component={ConnectionStack} />
-			<Drawer.Screen options={styles.cardStyleHeader} name="Profile" component={ProfileStack} />
-			<Drawer.Screen options={styles.cardStyleHeader} name="Log Out" component={LogOutScreen} />
-			<Drawer.Screen options={styles.cardStyleHeader} name="Help" component={HelpScreen} />
-			<Drawer.Screen options={styles.cardStyleHeader} name="About" component={AboutScreen} />
-		</Drawer.Navigator>
+		<DrawerContentScrollView {...props} contentContainerStyle={styles.moreDrawerContent}>
+			<DrawerItem
+				label="Help"
+				labelStyle={styles.moreDrawerLabel}
+				onPress={() => goTo('Help')}
+			/>
+			<DrawerItem
+				label="About"
+				labelStyle={styles.moreDrawerLabel}
+				onPress={() => goTo('About')}
+			/>
+			<DrawerItem
+				label="Log Out"
+				labelStyle={styles.moreDrawerLabel}
+				onPress={() => goTo('Log Out')}
+			/>
+		</DrawerContentScrollView>
+	);
+};
+
+const HomeTabs = () => {
+	return (
+		<BottomTabs.Navigator
+			screenOptions={{
+				tabBarActiveTintColor: '#f28482',
+				tabBarInactiveTintColor: '#999',
+				tabBarStyle: {
+					backgroundColor: '#f7ede2',
+					borderTopColor: '#e0d0c0',
+					borderTopWidth: 1,
+					paddingBottom: 5,
+					height: 65,
+				},
+				tabBarLabelStyle: {
+					fontSize: 12,
+					fontWeight: '600',
+				},
+				headerShown: false,
+			}}
+		>
+			<BottomTabs.Screen
+				name="Dashboard"
+				component={HomeScreen}
+				options={{
+					tabBarLabel: 'Dashboard',
+					tabBarIcon: ({ color, size }) => <Ionicons name="bar-chart" size={size} color={color} />,
+					headerShown: false,
+				}}
+			/>
+			<BottomTabs.Screen
+				name="Connections"
+				component={ConnectionStack}
+				options={{
+					tabBarLabel: 'Connections',
+					tabBarIcon: ({ color, size }) => <MaterialIcons name="storage" size={size} color={color} />,
+					headerShown: false,
+				}}
+			/>
+			<BottomTabs.Screen
+				name="Profile"
+				component={ProfileStack}
+				options={{
+					tabBarLabel: 'Profile',
+					tabBarIcon: ({ color, size }) => <Ionicons name="person" size={size} color={color} />,
+					headerShown: false,
+				}}
+			/>
+			<BottomTabs.Screen
+				name="More"
+				component={EmptyScreen}
+				options={{
+					tabBarLabel: 'More',
+					tabBarIcon: ({ color, size }) => <Ionicons name="menu" size={size} color={color} />,
+					headerShown: false,
+				}}
+				listeners={({ navigation }) => ({
+					tabPress: (e) => {
+						e.preventDefault();
+						navigation.getParent()?.dispatch(DrawerActions.openDrawer());
+					},
+				})}
+			/>
+			{/* Hidden tabs for More options — keep bottom bar visible on these screens */}
+			<BottomTabs.Screen
+				name="Help"
+				component={HelpScreen}
+				options={{ tabBarButton: () => null, headerShown: false }}
+			/>
+			<BottomTabs.Screen
+				name="About"
+				component={AboutScreen}
+				options={{ tabBarButton: () => null, headerShown: false }}
+			/>
+			<BottomTabs.Screen
+				name="Log Out"
+				component={LogOutScreen}
+				options={{ tabBarButton: () => null, headerShown: false }}
+			/>
+		</BottomTabs.Navigator>
+	);
+};
+
+const HomeBottomTabs = () => {
+	return (
+		<MoreDrawer.Navigator
+			initialRouteName="Home Tabs"
+			drawerContent={(props) => <MoreDrawerContent {...props} />}
+			screenOptions={{
+				drawerPosition: 'right',
+				drawerType: 'front',
+				overlayColor: 'rgba(0, 0, 0, 0.25)',
+				drawerStyle: styles.moreDrawer,
+				drawerActiveTintColor: '#f28482',
+				drawerInactiveTintColor: '#333',
+				drawerLabelStyle: styles.moreDrawerLabel,
+				headerShown: false,
+			}}
+		>
+			<MoreDrawer.Screen
+				name="Home Tabs"
+				component={HomeTabs}
+				options={{
+					drawerItemStyle: { display: 'none' },
+					headerShown: false,
+				}}
+			/>
+		</MoreDrawer.Navigator>
 	);
 };
 
@@ -317,9 +445,6 @@ const styles = StyleSheet.create({
 		fontSize: fonts.body.size,
 		backgroundColor: colors.body.background
 	},
-	drawerStyle: {
-		backgroundColor: colors.navigation.background,
-	},
 	cardStyleHeader: {
 		headerMode: 'screen',
 		headerTintColor: '#f7ede2',
@@ -357,6 +482,14 @@ const styles = StyleSheet.create({
 		marginLeft: 10,
 		padding: 2
 	},
+	moreDrawer: {
+		backgroundColor: colors.body.background,
+		width: 260,
+	},
+	moreDrawerLabel: {
+		fontSize: fonts.label.size,
+		fontWeight: '600',
+	},
 });
 
-export default HomeDrawer;
+export default HomeBottomTabs;
