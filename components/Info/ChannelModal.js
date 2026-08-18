@@ -251,11 +251,13 @@ const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
             onRequestClose={onCloseButton}
             transparent={true}
         >
-            <ScrollView contentContainerStyle={styles.modalContent}>
-                <Text style={styles.channelInfo}>Channel Info</Text>
-                <Text style={styles.item}><Text style={styles.label}>Name: </Text><Text>{channel.name}</Text></Text>
-                <Text style={styles.item}><Text style={styles.label}>ID: </Text><Text>{channel.id}</Text></Text>
-                <Text style={styles.item}><Text style={styles.label}>State: </Text><Text>{channel.state}</Text></Text>
+            <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                    <ScrollView contentContainerStyle={styles.modalScrollContent}>
+                        <Text style={styles.channelInfo}>Channel Info</Text>
+                        <Text style={styles.item}><Text style={styles.label}>Name: </Text><Text>{channel.name}</Text></Text>
+                        <Text style={styles.item}><Text style={styles.label}>ID: </Text><Text>{channel.id}</Text></Text>
+                        <Text style={styles.item}><Text style={styles.label}>State: </Text><Text>{channel.state}</Text></Text>
 
                 
 
@@ -305,30 +307,37 @@ const ChannelModal = ({ isVisible, onClose, data, connection, onRefresh }) => {
                     </TouchableOpacity>
                 </View>
 
-                {/* Button to navigate to ViewChannelMessages component */}
-                <Button title="View Error Messages" onPress={() => navigation.navigate('View Error Messages', { state : { connection, data } })} color={colors.button.background} />
+                    {/* Button to navigate to ViewChannelMessages component */}
+                    <Button title="View Error Messages" onPress={() => navigation.navigate('View Error Messages', { state : { connection, data } })} color={colors.button.background} />
 
-                {commandStatus ? <View style={styles.commandMessage}><Text><FontAwesome name="envelope-o" size={24} color="black" /> {commandMessage}</Text></View>
-                    : commandStatus === false ? <View style={styles.commandMessageError}><Text><MaterialIcons name="error-outline" size={24} color="black" /> {commandMessage}</Text></View>
-                        : null}
+                        {commandStatus ? <View style={styles.commandMessage}><Text><FontAwesome name="envelope-o" size={24} color="black" /> {commandMessage}</Text></View>
+                            : commandStatus === false ? <View style={styles.commandMessageError}><Text><MaterialIcons name="error-outline" size={24} color="black" /> {commandMessage}</Text></View>
+                                : null}
 
-                <Button title="Close" onPress={() => onCloseButton()} color={colors.button.background} />
-            </ScrollView>
+                        <Button title="Close" onPress={() => onCloseButton()} color={colors.button.background} />
+                    </ScrollView>
+                </View>
+            </View>
         </Modal>
     );
 };
 
 const styles = StyleSheet.create({
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 16,
+    },
     modalContent: {
         backgroundColor: colors.modal.background,
         padding: 20,
         borderRadius: 10,
-        // scrollable
-        // centered
-        alignSelf: 'center',
         width: '90%',
-        minHeight: '50%',
-
+        maxHeight: '85%',
+    },
+    modalScrollContent: {
+        paddingBottom: 8,
     },
     modalText: {
         fontSize: 16,

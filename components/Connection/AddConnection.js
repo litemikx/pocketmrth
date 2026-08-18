@@ -3,6 +3,7 @@ import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Crypto from 'expo-crypto';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -10,6 +11,7 @@ const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
 
 const AddConnection = () => {
+	const insets = useSafeAreaInsets();
 
 	const navigation = useNavigation();
 
@@ -73,7 +75,7 @@ const AddConnection = () => {
 	}
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}> 
+		<ScrollView contentContainerStyle={[styles.container, { paddingTop: Math.max(insets.top + 12, 28) }]}> 
 		{ success == '' ?
 			<>
 			<TextInput

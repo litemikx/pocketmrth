@@ -4,6 +4,7 @@ import CallApiMethod from '../CallApiMethod';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GetConnections from './GetConnections';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store';
 import ChannelStackedBarChart from '../Chart/StackedBarChart';
 import ChannelModal from '../Info/ChannelModal';
@@ -17,6 +18,7 @@ const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
 
 const ViewConnection = ({ route }) => {
+	const insets = useSafeAreaInsets();
 
 	const navigation = useNavigation();
 
@@ -242,14 +244,14 @@ const ViewConnection = ({ route }) => {
 
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
+		<ScrollView contentContainerStyle={[styles.container, { paddingTop: Math.max(insets.top + 12, 28) }]}>
 
 			<View style={{ flexDirection: 'row' }}>
 				<Text style={styles.label}>Name:</Text>
 				<Text style={styles.content}> {connectionDetails.name}</Text>
 				<View style={styles.iconGrp}>
 					<TouchableOpacity style={styles.iconBtn} onPress={getSystemInfo(connectionDetails)}>
-						<AntDesign name="infocirlce" size={26} color={colors.bar.system} />
+											<AntDesign name="info-circle" size={26} color={colors.bar.system} />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.iconBtn} onPress={() => handleViewEvents(connectionDetails)}>
 						<SimpleLineIcons name="event" size={26} color={colors.button.background} />

@@ -4,6 +4,7 @@ import { useNavigation, useFocusEffect, DrawerActions } from '@react-navigation/
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ConnectionScreen from './Connection/Connection';
 import AddConnectionScreen from './Connection/AddConnection';
 import ViewConnectionScreen from './Connection/ViewConnection';
@@ -100,6 +101,10 @@ const MoreDrawerContent = (props) => {
 };
 
 const HomeTabs = () => {
+	const insets = useSafeAreaInsets();
+	const tabBarBottomPadding = Math.max(insets.bottom, 8);
+	const tabBarHeight = 56 + tabBarBottomPadding;
+
 	return (
 		<BottomTabs.Navigator
 			screenOptions={{
@@ -109,12 +114,23 @@ const HomeTabs = () => {
 					backgroundColor: '#f7ede2',
 					borderTopColor: '#e0d0c0',
 					borderTopWidth: 1,
-					paddingBottom: 5,
-					height: 65,
+					paddingTop: 8,
+					paddingBottom: tabBarBottomPadding,
+					paddingHorizontal: 10,
+					height: tabBarHeight,
+				},
+				tabBarItemStyle: {
+					paddingVertical: 4,
+					marginHorizontal: 4,
+					borderRadius: 10,
+				},
+				tabBarIconStyle: {
+					marginBottom: 2,
 				},
 				tabBarLabelStyle: {
 					fontSize: 12,
 					fontWeight: '600',
+					marginBottom: 2,
 				},
 				headerShown: false,
 			}}
@@ -165,17 +181,17 @@ const HomeTabs = () => {
 			<BottomTabs.Screen
 				name="Help"
 				component={HelpScreen}
-				options={{ tabBarButton: () => null, headerShown: false }}
+				options={{ tabBarButton: () => null, tabBarItemStyle: { display: 'none' }, headerShown: false }}
 			/>
 			<BottomTabs.Screen
 				name="About"
 				component={AboutScreen}
-				options={{ tabBarButton: () => null, headerShown: false }}
+				options={{ tabBarButton: () => null, tabBarItemStyle: { display: 'none' }, headerShown: false }}
 			/>
 			<BottomTabs.Screen
 				name="Log Out"
 				component={LogOutScreen}
-				options={{ tabBarButton: () => null, headerShown: false }}
+				options={{ tabBarButton: () => null, tabBarItemStyle: { display: 'none' }, headerShown: false }}
 			/>
 		</BottomTabs.Navigator>
 	);
@@ -210,7 +226,8 @@ const HomeBottomTabs = () => {
 };
 
 const HomeScreen = () => {
-	const { setSession, checkSession } = useSession();
+	const { checkSession } = useSession();
+	const insets = useSafeAreaInsets();
 	const [totalConnections, setTotalConnections] = useState(0);
 	const [totalConnectionsUp, setTotalConnectionsUp] = useState(0);
 	// create array of connection with stats 
@@ -220,86 +237,70 @@ const HomeScreen = () => {
 	const [loadingServers, setLoadingServers] = useState(false);
 
 	const navigation = useNavigation();
+	const navigationRef = useRef(navigation);
+	const checkSessionRef = useRef(checkSession);
 
 	const [isRegistered, setIsRegistered] = React.useState(false);
 	const [backgroundStatus, setBackgroundStatus] = React.useState(null);
 
 	// set modal for notification alert status
 	const [isNotificationAlertStatusModalVisible, setNotificationAlertStatusModalVisible] = useState(false);
+	const isRefreshingRef = useRef(false);
 
 	const BACKGROUND_FETCH_TASK = 'push-notification-alert';
 
+	useEffect(() => {
+		navigationRef.current = navigation;
+	}, [navigation]);
 
 	useEffect(() => {
-		(async () => {
-			var loggedin = await checkSession();
+		checkSessionRef.current = checkSession;
+	}, [checkSession]);
+
+
+	const refreshDashboard = React.useCallback(async () => {
+		if (isRefreshingRef.current) {
+			return;
+		}
+
+		isRefreshingRef.current = true;
+		try {
+			const loggedin = await checkSessionRef.current();
 			if (!loggedin) {
-				navigation.navigate('Login');
-			} else {
-				// Check if there is network connection
-				const networkState = await Network.getNetworkStateAsync();
-				if (networkState.isConnected === true) {
-					console.log('Network state: ' + JSON.stringify(networkState));
-				} else {
-					alert('Network state: ' + JSON.stringify(networkState));
-				}
-			}
-		})();
-
-		// reset values
-		setConnectionsStats([]);
-
-		// reset values
-		setTotalConnections(0);
-		setTotalConnectionsUp(0);
-
-		setLoadingItems(false);
-		setLoadingServers(false);
-
-		// get connections
-		getConnections().then(async (conns) => {
-			var res = await getConnectionStats(conns);
-			if (res) {
-				setConnectionsStats(res);
-				setLoadingItems(true);
-				setLoadingServers(true);
-			} else {
-				setLoadingItems(true);
-				setLoadingServers(true);
+				navigationRef.current.navigate('Login');
+				return;
 			}
 
-		});
+			const networkState = await Network.getNetworkStateAsync();
+			if (networkState.isConnected !== true) {
+				alert('Network state: ' + JSON.stringify(networkState));
+			}
 
-		RefreshAlert(true);
-		checkStatusAsync();
-		
-	}, []);
-
-	useFocusEffect(
-		React.useCallback(() => {
-			// reset values
 			setConnectionsStats([]);
 			setTotalConnections(0);
 			setTotalConnectionsUp(0);
 			setLoadingItems(false);
 			setLoadingServers(false);
 
-			getConnections().then(async (conns) => {
-				var res = await getConnectionStats(conns);
-				if (res) {
-					setConnectionsStats(res);
-					setLoadingItems(true);
-					setLoadingServers(true);
-				} else {
-					setLoadingItems(true);
-					setLoadingServers(true);
-				}
+			const conns = await getConnections();
+			const res = await getConnectionStats(conns);
+			if (res) {
+				setConnectionsStats(res);
+			}
 
-			});
-
+			setLoadingItems(true);
+			setLoadingServers(true);
 			RefreshAlert(true);
-			checkStatusAsync();
-		}, [])
+			await checkStatusAsync();
+		} finally {
+			isRefreshingRef.current = false;
+		}
+	}, []);
+
+	useFocusEffect(
+		React.useCallback(() => {
+			refreshDashboard();
+		}, [refreshDashboard])
 	);
 
 	async function getConnections() {
@@ -317,12 +318,13 @@ const HomeScreen = () => {
 	async function getConnectionStats(conns) {
 		try {
 			if (conns) {
+				let upCount = 0;
 				var promise_responses = await Promise.all(
 					conns.map(async (conn) => {
 						var res = await CallApiMethod.getServerStatus(conn);
 
 						if (res) {
-							setTotalConnectionsUp(totalConnectionsUp + 1);
+							upCount += 1;
 
 							var stats = await CallApiMethod.getAllChannelsStatistics(conn);
 							if (stats) {
@@ -345,6 +347,7 @@ const HomeScreen = () => {
 				var arry = promise_responses.filter(function (el) {
 					return el != null;
 				});
+				setTotalConnectionsUp(upCount);
 				return arry;
 			}
 		} catch (error) {
@@ -366,7 +369,7 @@ const HomeScreen = () => {
 	};
 
 	return (
-		<ScrollView contentContainerStyle={{ alignItems: 'center', flexGrow: 1, backgroundColor: colors.body.background }}>
+		<ScrollView contentContainerStyle={{ alignItems: 'center', flexGrow: 1, backgroundColor: colors.body.background, paddingTop: Math.max(insets.top + 8, 20) }}>
 			<View style={styles.container}>
 				
 					<Text style={styles.header}>Dashboard</Text>
@@ -383,7 +386,7 @@ const HomeScreen = () => {
 					}
 
 						<TouchableOpacity style={styles.iconBtn} onPress={toggleNotificationAlertStatusInfoModal}>
-							<AntDesign name="infocirlce" size={26} color={colors.bar.system} />
+							<AntDesign name="info-circle" size={26} color={colors.bar.system} />
 						</TouchableOpacity>
 					</View>
 				<Text style={styles.title}>Servers: {totalConnectionsUp} / {totalConnections}</Text>

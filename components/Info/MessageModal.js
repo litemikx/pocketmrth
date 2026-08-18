@@ -26,30 +26,38 @@ const MessageModal = ({ isVisible, onClose, data }) => {
       onRequestClose={onClose}
       transparent={true}
     >
-      <View style={styles.modalContent}>
-        { data ? 
-          <ScrollView>
-            <Text style={styles.systemInfo}>Message Details</Text>
-              <ScrollView horizontal>
-                <Text
-                  style={[styles.codeBlock, styles.modalText]}
-                  selectable
-                >
-                  {message}
-                </Text>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          { data ? 
+            <ScrollView>
+              <Text style={styles.systemInfo}>Message Details</Text>
+                <ScrollView horizontal>
+                  <Text
+                    style={[styles.codeBlock, styles.modalText]}
+                    selectable
+                  >
+                    {message}
+                  </Text>
+                </ScrollView>
               </ScrollView>
-            </ScrollView>
-          : <ScrollView>
-              <Text style={styles.modalText}>Loading...</Text>
-            </ScrollView>
-        }
-        <Button title="Close" onPress={onClose} color={colors.button.background} />
+            : <ScrollView>
+                <Text style={styles.modalText}>Loading...</Text>
+              </ScrollView>
+          }
+          <Button title="Close" onPress={onClose} color={colors.button.background} />
+        </View>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
   modalContent: {
     backgroundColor: colors.modal.background,
     padding: 20,
