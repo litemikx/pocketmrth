@@ -20,30 +20,38 @@ const EventModal = ({ isVisible, onClose, data, username, date }) => {
       onRequestClose={onClose}
       transparent={true}
     >
-      <View style={styles.modalContent}>
-        { data ? 
-          <ScrollView>
-            <Text style={styles.systemInfo}>Event Summary</Text>
-            <Text style={styles.modalText}>ID: {data.id}</Text>
-            <Text style={styles.modalText}>User: {username}</Text>
-            <Text style={styles.modalText}>Name: {data.name}</Text>
-            <Text style={styles.modalText}>Level: {data.level}</Text>
-            <Text style={styles.modalText}>Outcome: {data.outcome}</Text>
-            <Text style={styles.modalText}>IP Address: {data.ipAddress}</Text>
-            <Text style={styles.modalText}>Server ID: {data.serverId}</Text>
-            <Text style={styles.modalText}>Date Time: {date}</Text>
-          </ScrollView>
-          : <ScrollView>
-              <Text style={styles.modalText}>Loading...</Text>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          { data ? 
+            <ScrollView>
+              <Text style={styles.systemInfo}>Event Summary</Text>
+              <Text style={styles.modalText}>ID: {data.id}</Text>
+              <Text style={styles.modalText}>User: {username}</Text>
+              <Text style={styles.modalText}>Name: {data.name}</Text>
+              <Text style={styles.modalText}>Level: {data.level}</Text>
+              <Text style={styles.modalText}>Outcome: {data.outcome}</Text>
+              <Text style={styles.modalText}>IP Address: {data.ipAddress}</Text>
+              <Text style={styles.modalText}>Server ID: {data.serverId}</Text>
+              <Text style={styles.modalText}>Date Time: {date}</Text>
             </ScrollView>
-        }
-        <Button title="Close" onPress={onClose} color={colors.button.background} />
+            : <ScrollView>
+                <Text style={styles.modalText}>Loading...</Text>
+              </ScrollView>
+          }
+          <Button title="Close" onPress={onClose} color={colors.button.background} />
+        </View>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
   modalContent: {
     backgroundColor: colors.modal.background,
     padding: 20,

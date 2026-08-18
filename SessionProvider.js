@@ -13,10 +13,12 @@ export const SessionProvider = ({ children }) => {
 
     const checkSession = async () => {
         const token = await AsyncStorage.getItem('userToken');
-        if (token) {
+        const currentUserId = await AsyncStorage.getItem('currentUserId');
+        if (token && currentUserId) {
             return true;
         } else {
             setUserToken(null);
+            await AsyncStorage.removeItem('userToken');
             await AsyncStorage.removeItem('currentUserId');
             return false;
         }
@@ -25,6 +27,7 @@ export const SessionProvider = ({ children }) => {
     const clearSession = async () => {
         await AsyncStorage.removeItem('userToken');
         await AsyncStorage.removeItem('currentUserId');
+        await AsyncStorage.multiRemove(['pendingUserId', 'pendingUserToken']);
         setUserToken(null);
     };
 

@@ -4,14 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
 
 const Profile = () => {
+		const insets = useSafeAreaInsets();
     
         const navigation = useNavigation();
     
@@ -58,7 +59,7 @@ const Profile = () => {
 
         // return user details as static text
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, { paddingTop: Math.max(insets.top + 8, 20) }]}>
                 <Text style={styles.title}>Profile</Text>
                 <Text style={styles.label}>Username</Text>
                 <Text style={styles.text}>{username}</Text>

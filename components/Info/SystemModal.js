@@ -28,32 +28,40 @@ const SystemModal = ({ isVisible, onClose, data }) => {
       onRequestClose={onClose}
       transparent={true}
     >
-      <View style={styles.modalContent}>
-        { data ? 
-          <ScrollView>
-            <Text style={styles.systemInfo}>System Info</Text>
-            <Text style={styles.modalText}>Java: {system.info.jvmVersion}</Text>
-            <Text style={styles.modalText}>OS: {system.info.osName}</Text>
-            <Text style={styles.modalText}>Database: {system.info.dbName} {system.info.dbVersion}</Text>
-            <Text style={styles.modalText}>Allocated Memory: {convertBytesToMB(system.stats.allocatedMemoryBytes)} MB</Text>
-            <Text style={styles.modalText}>Free Memory: {convertBytesToMB(system.stats.freeMemoryBytes)} MB</Text>
-            <Text style={styles.modalText}>Max Memory: {convertBytesToMB(system.stats.maxMemoryBytes)} MB</Text>
-            
-            <Text style={styles.modalText}>CPU Usage: {system.stats.cpuUsagePct.toFixed(2)} %</Text>
-            
-            <Text style={styles.modalText}>Disk Usage: {convertBytesToGB((system.stats.diskTotalBytes - system.stats.diskFreeBytes))} GB / {convertBytesToGB(system.stats.diskTotalBytes)} GB</Text>
-          </ScrollView>
-          : <ScrollView>
-              <Text style={styles.modalText}>Loading...</Text>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          { data ? 
+            <ScrollView>
+              <Text style={styles.systemInfo}>System Info</Text>
+              <Text style={styles.modalText}>Java: {system.info.jvmVersion}</Text>
+              <Text style={styles.modalText}>OS: {system.info.osName}</Text>
+              <Text style={styles.modalText}>Database: {system.info.dbName} {system.info.dbVersion}</Text>
+              <Text style={styles.modalText}>Allocated Memory: {convertBytesToMB(system.stats.allocatedMemoryBytes)} MB</Text>
+              <Text style={styles.modalText}>Free Memory: {convertBytesToMB(system.stats.freeMemoryBytes)} MB</Text>
+              <Text style={styles.modalText}>Max Memory: {convertBytesToMB(system.stats.maxMemoryBytes)} MB</Text>
+              
+              <Text style={styles.modalText}>CPU Usage: {system.stats.cpuUsagePct.toFixed(2)} %</Text>
+              
+              <Text style={styles.modalText}>Disk Usage: {convertBytesToGB((system.stats.diskTotalBytes - system.stats.diskFreeBytes))} GB / {convertBytesToGB(system.stats.diskTotalBytes)} GB</Text>
             </ScrollView>
-        }
-        <Button title="Close" onPress={onClose} color={colors.button.background} />
+            : <ScrollView>
+                <Text style={styles.modalText}>Loading...</Text>
+              </ScrollView>
+          }
+          <Button title="Close" onPress={onClose} color={colors.button.background} />
+        </View>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
   modalContent: {
     backgroundColor: colors.modal.background,
     padding: 20,

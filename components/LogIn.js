@@ -15,16 +15,26 @@ const LogIn = ({ navigation }) => {
 	const [error, setError] = useState('');
 	
 	useEffect(() => {
-		var loggedin = checkSession();
-		if(loggedin) {
-			navigation.navigate('Home');
-		} else {
-			navigation.navigate('Login');
-		}
-	}, []);
+		let isActive = true;
+
+		const validateSession = async () => {
+			const loggedin = await checkSession();
+			if (isActive && loggedin) {
+				navigation.navigate('Home');
+			}
+		};
+
+		validateSession();
+
+		return () => {
+			isActive = false;
+		};
+	}, [checkSession, navigation]);
 
 	const handleLogin = async () => {
 		try {
+			await AsyncStorage.multiRemove(['pendingUserId', 'pendingUserToken']);
+
 			var getUsers = await AsyncStorage.getItem('users');
 			var users = JSON.parse(getUsers);
 
@@ -60,18 +70,21 @@ const LogIn = ({ navigation }) => {
 					);
 
 					if(user[0].twofactor) {
-						setSession(token);
-						await AsyncStorage.setItem('currentUserId', user[0].id);
+						await AsyncStorage.setItem('pendingUserId', user[0].id);
+						await AsyncStorage.setItem('pendingUserToken', token);
 						navigation.navigate('Passcode');
 					} else {
 						setSession(token);
 						await AsyncStorage.setItem('currentUserId', user[0].id);
+						await AsyncStorage.multiRemove(['pendingUserId', 'pendingUserToken']);
 						navigation.navigate('Home');
 					}
 					
 				} else {
 					setError('Invalid username or password.');
+					await AsyncStorage.removeItem('userToken');
 					await AsyncStorage.removeItem('currentUserId');
+					await AsyncStorage.multiRemove(['pendingUserId', 'pendingUserToken']);
 				}
 			}
 		} catch (error) {

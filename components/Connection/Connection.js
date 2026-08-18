@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ViewConnection from './ViewConnection';
 import GetConnections from './GetConnections';
 import { set } from 'react-native-reanimated';
@@ -14,6 +15,7 @@ const colors = require('../../assets/colors.json');
 const Connection = () => {
 	const [connections, setConnections] = useState([]);
 	const [loadingStatus, setLoadingStatus] = useState(false);
+	const insets = useSafeAreaInsets();
 
 	const navigation = useNavigation();
 	
@@ -99,7 +101,7 @@ const Connection = () => {
 	}, [searchQuery]);
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
+		<ScrollView contentContainerStyle={[styles.container, { paddingTop: Math.max(insets.top + 12, 28) }]}>
 			<View style={styles.searchContainer}>
 				<TextInput
 					style={styles.searchInput}
@@ -131,8 +133,8 @@ const Connection = () => {
 								<Text>{item.host}</Text>
 							</View>
 							<View style={styles.statusGrp}>
-								<AntDesign style={styles.statusIcon} name="upcircle" size={24} color={item.status === true ? colors.status.up : 'grey'} />
-								<AntDesign style={styles.statusIcon} name="downcircle" size={24} color={item.status === false ? colors.status.down : 'grey'} />
+								<FontAwesome style={styles.statusIcon} name="arrow-circle-up" size={24} color={item.status === true ? colors.status.up : 'grey'} />
+								<FontAwesome style={styles.statusIcon} name="arrow-circle-down" size={24} color={item.status === false ? colors.status.down : 'grey'} />
 							</View>
 						</TouchableOpacity>
 					))}

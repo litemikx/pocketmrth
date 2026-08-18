@@ -7,6 +7,7 @@ import CallApiMethod from '../CallApiMethod';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GetConnections from './GetConnections';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store';
 import ChannelStackedBarChart from '../Chart/StackedBarChart';
 import EventModal from '../Info/EventModal';
@@ -21,6 +22,7 @@ const fonts = require('../../assets/fonts.json');
 const size = require('../../assets/size.json');
 
 const ViewEvents = ({ route }) => {
+	const insets = useSafeAreaInsets();
 
 	//const navigation = useNavigation();
 
@@ -133,7 +135,7 @@ const ViewEvents = ({ route }) => {
 	}
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
+		<ScrollView contentContainerStyle={[styles.container, { paddingTop: Math.max(insets.top + 12, 28) }]}>
 			<Text style={styles.title}>{connectionDetails.name}</Text>
 			<View style={styles.searchContainer}>
 				<TextInput
@@ -164,7 +166,7 @@ const ViewEvents = ({ route }) => {
 							<Text>{convertDate(item.dateTime)}</Text>
 						</View>
 						<View style={styles.statusGrp}>
-							{ item.level === 'INFORMATION' ? <AntDesign name="infocirlce" size={24} color={colors.event_status.information} /> : null }
+													{ item.level === 'INFORMATION' ? <AntDesign name="info-circle" size={24} color={colors.event_status.information} /> : null }
 							{ item.level === 'WARNING' ? <Entypo name="warning" size={24} color={colors.event_status.warning} /> : null }
 							{ item.level === 'ERROR' ? <MaterialIcons name="error" size={28} color={colors.event_status.error} /> : null }
 						</View>

@@ -2,16 +2,10 @@
   "expo": {
     "name": "PocketMRTH",
     "slug": "PocketMRTH",
-    "version": "3.0.2",
+    "version": "3.1.2",
     "orientation": "portrait",
-    "splash": {
-      "image": "./assets/logo-200x200.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#f7ede2"
-    },
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "jsEngine": "hermes",
     "updates": {
       "enabled": true,
       "fallbackToCacheTimeout": 0,
@@ -21,35 +15,35 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mixelot.PocketMRTH"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#f7ede2"
+        "backgroundColor": "#f6f0e8"
       },
-      "jsEngine": "jsc",
       "package": "com.mixelot.PocketMRTH",
-      "versionCode": 17
+      "versionCode": 18
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
+    "runtimeVersion": "3.1.2",
     "plugins": [
       "expo-updates",
       [
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#FFFFFF",
+          "color": "#111111",
           "androidMode": "default"
         }
       ],
       "expo-secure-store",
-      "expo-font"
+      "expo-font",
+      "expo-splash-screen",
+      "expo-status-bar"
     ],
     "extra": {
       "eas": {

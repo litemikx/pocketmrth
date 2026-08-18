@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Button, TextInput, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GetConnections from './GetConnections';
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
@@ -12,6 +13,7 @@ const colors = require('../../assets/colors.json');
 const fonts = require('../../assets/fonts.json');
 
 const EditConnection = ({ route }) => {
+	const insets = useSafeAreaInsets();
 
     const navigation = useNavigation();
 
@@ -79,7 +81,7 @@ const EditConnection = ({ route }) => {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView contentContainerStyle={[styles.container, { paddingTop: Math.max(insets.top + 12, 28) }]}>
             {success == '' ?
             (<><TextInput
                 style={styles.input}
