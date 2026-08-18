@@ -46,17 +46,17 @@ const Help = () => {
                 <View style={styles.iconList}>
                     <Text style={styles.listTitle}>Icon Meanings:</Text>
                     <View style={styles.iconItem}>
-                        <Text style={styles.iconMeaning}><AntDesign name="infocirlce" size={26} color={colors.bar.system} /> - Info</Text>
+                        <Text style={styles.iconMeaning}><AntDesign name="info-circle" size={26} color={colors.bar.system} /> - Info</Text>
                         {/** Add Description for icon "Info" */}
                         <Text style={styles.iconDescription}>This icon is used to display information about the system.</Text>
                     </View>
                     <View style={styles.iconItem}>
-                        <Text style={styles.iconMeaning}><AntDesign name="upcircle" size={26} color={colors.status.up} /> - Active/Up</Text>
+                        <Text style={styles.iconMeaning}><FontAwesome name="arrow-circle-up" size={26} color={colors.status.up} /> - Active/Up</Text>
                         {/** Add Description for "Active" status */}
                         <Text style={styles.iconDescription}>This icon is used to display that the system is active or up.</Text>
                     </View>
                     <View style={styles.iconItem}>
-                        <Text style={styles.iconMeaning}><AntDesign name="downcircle" size={26} color={colors.status.down} /> - Inactive/Down</Text>
+                        <Text style={styles.iconMeaning}><FontAwesome name="arrow-circle-down" size={26} color={colors.status.down} /> - Inactive/Down</Text>
                         {/** Add Description for "Inactive" status */}
                         <Text style={styles.iconDescription}>This icon is used to display that the system is inactive or down.</Text>
                     </View>
@@ -114,7 +114,7 @@ const Help = () => {
                     </View>
                     {/** The next 3 icons are for the event status which are information, warning and error */}
                     <View style={styles.iconItem}>
-                        <Text style={styles.iconMeaning}> <AntDesign name="infocirlce" size={26} color={colors.event_status.information} /> - Event Information</Text>
+                        <Text style={styles.iconMeaning}> <AntDesign name="info-circle" size={26} color={colors.event_status.information} /> - Event Information</Text>
                         {/** Add Description for "Event Information" icon */}
                         <Text style={styles.iconDescription}>This icon is used to display information about the event.</Text>
                     </View>

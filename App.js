@@ -76,11 +76,11 @@ const App = () => {
 		responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
 			console.log(response);
 		});
-	
-		(() => {
-			Notifications.removeNotificationSubscription(notificationListener.current);
-			Notifications.removeNotificationSubscription(responseListener.current);
-		})();
+
+		return () => {
+			notificationListener.current?.remove?.();
+			responseListener.current?.remove?.();
+		};
         
     }, []);
 
